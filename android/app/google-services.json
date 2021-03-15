@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "464761191742",
+    "project_id": "solveequation-ecf24",
+    "storage_bucket": "solveequation-ecf24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464761191742:android:0377905604a217069d806f",
+        "android_client_info": {
+          "package_name": "com.capstone.solvequation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464761191742-n9hlg3tpmvfc7su7olk3o8bt0u69reo8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capstone.solvequation",
+            "certificate_hash": "765cb835efb6672f03e02c63d98a068ab3174462"
+          }
+        },
+        {
+          "client_id": "464761191742-nhbg1d8p82m20uo5fr3cgt6tabrutr3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHgI1xpM87FUlGTK4lMtCcvFs3jYfHZ9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464761191742-nhbg1d8p82m20uo5fr3cgt6tabrutr3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

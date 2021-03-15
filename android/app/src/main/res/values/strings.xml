@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Solve Equation</string>
+    <string name="facebook_app_id">728549528035173</string>
+    <string name="fb_login_protocol_scheme">fb728549528035173</string>
+</resources>
