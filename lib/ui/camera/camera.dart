@@ -26,6 +26,7 @@ class _CameraPage extends State<CameraPage>
   bool isDevice = false;
   bool _inProcess = false;
   bool _isCrop = false;
+  bool _isSuccess = false;
   File _selectedFile;
   bool _output = false;
   List<Root> _list;
@@ -37,6 +38,7 @@ class _CameraPage extends State<CameraPage>
     File selectedFile = widget.selectedFile;
     _selectedFile = selectedFile;
     _item = null;
+    _inProcess = false;
     _isCrop = widget.crop;
     super.initState();
   }
@@ -56,6 +58,7 @@ class _CameraPage extends State<CameraPage>
             _output = true;
             _item = result;
             _inProcess = false;
+            _isSuccess = result.success;
             isDevice = false;
             _isCrop = false;
           });
@@ -80,21 +83,10 @@ class _CameraPage extends State<CameraPage>
     }
   }
 
-  // final spinkit = SpinKitFadingCircle(
-  //   color: Colors.white,
-  //   size: 50.0,
-  //   controller: AnimationController(
-  //       vsync: this, duration: const Duration(milliseconds: 1200)),
-  // );
-
   getImage(ImageSource source) async {
     if (source != null) {
-      this.setState(() {
-        _inProcess = true;
-      });
       File image = await ImagePicker.pickImage(source: source);
       if (image != null) {
-        print(image);
         setState(() {
           _output = true;
           _inProcess = false;
@@ -110,13 +102,9 @@ class _CameraPage extends State<CameraPage>
 
   takeImage(ImageSource source) async {
     if (source != null) {
-      this.setState(() {
-        _inProcess = true;
-      });
       File image = await ImagePicker.pickImage(source: source);
       if (image != null) {
         isDevice = true;
-        print(image);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Device(image)));
       }
@@ -226,6 +214,7 @@ class _CameraPage extends State<CameraPage>
                                   print(result);
                                   setState(() {
                                     _output = true;
+                                    _isSuccess = result.success;
                                     _item = result;
                                     isDevice = false;
                                     _inProcess = false;
@@ -237,134 +226,215 @@ class _CameraPage extends State<CameraPage>
                             ),
                           ],
                         )
-                      : Column(
-                          children: <Widget>[
-                            // spinkit,
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 25, vertical: 10),
-                              child: TeXView(
-                                child: TeXViewColumn(children: [
-                                  TeXViewInkWell(
-                                    id: "id_0",
+                      : (_isSuccess)
+                          ? Column(
+                              children: <Widget>[
+                                // spinkit,
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 25, vertical: 10),
+                                  child: TeXView(
                                     child: TeXViewColumn(children: [
-                                      TeXViewDocument('${_item?.latex}',
-                                          style: TeXViewStyle(
-                                              textAlign:
-                                                  TeXViewTextAlign.Center)),
+                                      TeXViewInkWell(
+                                        id: "id_0",
+                                        child: TeXViewColumn(children: [
+                                          TeXViewDocument('${_item?.latex}',
+                                              style: TeXViewStyle(
+                                                  textAlign:
+                                                      TeXViewTextAlign.Center)),
+                                        ]),
+                                      )
                                     ]),
-                                  )
-                                ]),
-                                style: TeXViewStyle(
-                                  elevation: 10,
-                                  borderRadius: TeXViewBorderRadius.all(15),
-                                  border: TeXViewBorder.all(
-                                      TeXViewBorderDecoration(
-                                          borderColor: kPrimaryColor,
-                                          borderStyle:
-                                              TeXViewBorderStyle.Double,
-                                          borderWidth: 5)),
-                                  backgroundColor: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 10),
-                              child: Text(
-                                "Result: ",
-                                style: GoogleFonts.openSans(
-                                    textStyle: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                            ),
-                            ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: _item?.roots?.length ?? 0,
-                                itemBuilder: (BuildContext ctxt, int index) {
-                                  return Container(
-                                      margin:
-                                          EdgeInsets.only(bottom: 20, left: 80),
-                                      child: Row(children: [
-                                        Flexible(
-                                            flex: 2,
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  'x${index + 1}',
-                                                  style: GoogleFonts.openSans(
-                                                      textStyle: TextStyle(
-                                                          color: Colors.black54,
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Flexible(
-                                                  child: Text(
-                                                    "=",
-                                                    style: GoogleFonts.openSans(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                Colors.black54,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Flexible(
-                                                  child: Text(
-                                                    '${_item?.roots[index]}',
-                                                    style: GoogleFonts.openSans(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                Colors.black87,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                  ),
-                                                )
-                                              ],
-                                            ))
-                                      ]));
-                                }),
-                            Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 50, vertical: 5),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  height: 56,
-                                  child: FlatButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    color: kPrimaryColor,
-                                    onPressed: () => {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CameraPage(null, false)))
-                                    },
-                                    child: Text(
-                                      "Continue",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                      ),
+                                    style: TeXViewStyle(
+                                      elevation: 10,
+                                      borderRadius: TeXViewBorderRadius.all(15),
+                                      border: TeXViewBorder.all(
+                                          TeXViewBorderDecoration(
+                                              borderColor: kPrimaryColor,
+                                              borderStyle:
+                                                  TeXViewBorderStyle.Double,
+                                              borderWidth: 5)),
+                                      backgroundColor: Colors.white,
                                     ),
                                   ),
-                                ))
-                          ],
-                        )
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 10),
+                                  child: Text(
+                                    "Result: ",
+                                    style: GoogleFonts.openSans(
+                                        textStyle: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                ),
+                                ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: _item?.roots?.length ?? 0,
+                                    itemBuilder:
+                                        (BuildContext ctxt, int index) {
+                                      return Container(
+                                          margin: EdgeInsets.only(
+                                              bottom: 20, left: 80),
+                                          child: Row(children: [
+                                            Flexible(
+                                                flex: 2,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    // Text(
+                                                    //   'x${index + 1}',
+                                                    //   style: GoogleFonts.openSans(
+                                                    //       textStyle: TextStyle(
+                                                    //           color: Colors
+                                                    //               .black54,
+                                                    //           fontSize: 16,
+                                                    //           fontWeight:
+                                                    //               FontWeight
+                                                    //                   .bold)),
+                                                    // ),
+                                                    // SizedBox(
+                                                    //   width: 10,
+                                                    // ),
+                                                    // Flexible(
+                                                    //   child: Text(
+                                                    //     "=",
+                                                    //     style: GoogleFonts.openSans(
+                                                    //         textStyle: TextStyle(
+                                                    //             color: Colors
+                                                    //                 .black54,
+                                                    //             fontSize: 18,
+                                                    //             fontWeight:
+                                                    //                 FontWeight
+                                                    //                     .bold)),
+                                                    //   ),
+                                                    // ),
+                                                    // SizedBox(
+                                                    //   width: 10,
+                                                    // ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        '${_item?.roots[index]}',
+                                                        style: GoogleFonts.openSans(
+                                                            textStyle: TextStyle(
+                                                                color: Colors
+                                                                    .black87,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ))
+                                          ]));
+                                    }),
+                                Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 50, vertical: 5),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 56,
+                                      child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        color: kPrimaryColor,
+                                        onPressed: () => {
+                                          imageCache.clear(),
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CameraPage(null, false)))
+                                        },
+                                        child: Text(
+                                          "Continue",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ))
+                              ],
+                            )
+                          : Column(
+                              children: <Widget>[
+                                // spinkit,
+                                (_item.latex.isNotEmpty)
+                                    ? Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 25, vertical: 10),
+                                        child: TeXView(
+                                          child: TeXViewColumn(children: [
+                                            TeXViewInkWell(
+                                              id: "id_0",
+                                              child: TeXViewColumn(children: [
+                                                TeXViewDocument(
+                                                    '${_item?.latex}',
+                                                    style: TeXViewStyle(
+                                                        textAlign:
+                                                            TeXViewTextAlign
+                                                                .Center)),
+                                              ]),
+                                            )
+                                          ]),
+                                          style: TeXViewStyle(
+                                            elevation: 10,
+                                            borderRadius:
+                                                TeXViewBorderRadius.all(15),
+                                            border: TeXViewBorder.all(
+                                                TeXViewBorderDecoration(
+                                                    borderColor: kPrimaryColor,
+                                                    borderStyle:
+                                                        TeXViewBorderStyle
+                                                            .Double,
+                                                    borderWidth: 5)),
+                                            backgroundColor: Colors.white,
+                                          ),
+                                        ),
+                                      )
+                                    : Center(),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 10),
+                                  child: Text(
+                                    _item.message,
+                                    style: GoogleFonts.openSans(
+                                        textStyle: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 16)),
+                                  ),
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 50, vertical: 5),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 56,
+                                      child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        color: kPrimaryColor,
+                                        onPressed: () => {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CameraPage(null, false)))
+                                        },
+                                        child: Text(
+                                          "Continue",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ))
+                              ],
+                            )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -393,6 +463,7 @@ class _CameraPage extends State<CameraPage>
                           onPressed: () {
                             takeImage(ImageSource.camera);
                           },
+                          width: MediaQuery.of(context).size.width * 0.45,
                           shadowDegree: ShadowDegree.light,
                           color: kAccentColor,
                         ),
@@ -421,6 +492,7 @@ class _CameraPage extends State<CameraPage>
                           onPressed: () {
                             getImage(ImageSource.gallery);
                           },
+                          width: MediaQuery.of(context).size.width * 0.45,
                           shadowDegree: ShadowDegree.light,
                           color: Colors.green,
                         ),
@@ -437,7 +509,7 @@ class _CameraPage extends State<CameraPage>
     itemBuilder: (BuildContext context, int index) {
       return DecoratedBox(
         decoration: BoxDecoration(
-          color: index.isEven ? Colors.red : Colors.green,
+          color: index.isEven ? kPrimaryColor : kPrimaryColor,
         ),
       );
     },

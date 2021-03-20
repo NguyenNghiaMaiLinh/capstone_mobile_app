@@ -114,15 +114,5 @@ class _MyAppState extends State<Device> {
     debugPrint('$file');
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => CameraPage(file, true)));
-    // _imageService.Upload(file).then((result) {
-    //   print(result);
-    //   if (result != null) {
-    //     Navigator.of(context).push(
-    //         MaterialPageRoute(builder: (context) => CameraPage(file, true)));
-    //   } else {
-    //     Navigator.of(context).push(
-    //         MaterialPageRoute(builder: (context) => CameraPage(file, false)));
-    //   }
-    // });
   }
 }

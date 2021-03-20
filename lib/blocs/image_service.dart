@@ -5,6 +5,7 @@ import 'package:async/async.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:solvequation/data/result.dart';
+import 'package:solvequation/constants/constants.dart';
 
 class ImageService {
   Future<ResultItem> Upload(File imageFile) async {
@@ -12,7 +13,7 @@ class ImageService {
         new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
 
-    var uri = Uri.parse('${url}/api/images');
+    var uri = Uri.parse('$URL/api/images');
 
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile('file', stream, length,
@@ -31,8 +32,9 @@ class ImageService {
       String latex = body['latex'];
       // expression = 'r"""$expression"""';
       print(expression);
-      var rootsJson = jsonDecode(response.body)['roots'];
-      List<double> roots = rootsJson != null ? List.from(rootsJson) : null;
+      List<dynamic> rootsJson = jsonDecode(response.body)['roots'];
+      List<String> roots =
+          rootsJson != null ? rootsJson.map((e) => e.toString()).toList() : [];
       ResultItem result =
           new ResultItem(success, message, latex, expression, roots);
       return result;

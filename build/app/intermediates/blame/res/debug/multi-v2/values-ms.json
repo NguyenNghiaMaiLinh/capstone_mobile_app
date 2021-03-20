@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\Captone_SourceCode\\mobile_v2\\solve_quation\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ms\\values-ms.xml",
+            "outputFile": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ms\\values-ms.xml",
             "map": [
                 {
                     "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\13232494b5661a3212b02519f3e2b385\\res\\values-ms\\values-ms.xml",

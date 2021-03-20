@@ -17,11 +17,11 @@ class _LoginWithFacebookState extends State<FacebookSignupButtonWidget> {
   @override
   Widget build(BuildContext context) => Container(
         padding: EdgeInsets.all(4),
-        width: MediaQuery.of(context).size.width * 0.7,
+        width: MediaQuery.of(context).size.width * 0.8,
         child: OutlineButton.icon(
           label: Text(
             'Sign In With Facebook',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

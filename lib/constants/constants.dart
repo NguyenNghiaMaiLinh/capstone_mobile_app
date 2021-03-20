@@ -14,4 +14,4 @@ const kInactiveChartColor = Color(0xFF979797);
 const kButtonColor = Color(0xFF4C6282);
 
 const kTextColor = Color(0xFF757575);
-const url = "http://192.168.166.1:8080";
+const URL = "https://15533d3b34bf0a.localhost.run";

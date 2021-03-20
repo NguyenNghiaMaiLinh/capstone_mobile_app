@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\Captone_SourceCode\\mobile_v2\\solve_quation\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
+            "outputFile": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
             "map": [
                 {
                     "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\13232494b5661a3212b02519f3e2b385\\res\\values\\values.xml",
@@ -116,6 +116,23 @@
                     }
                 },
                 {
+                    "source": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\generated\\res\\google-services\\debug\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,199,281,385,494,614,717",
+                        "endColumns": "143,81,103,108,119,102,79",
+                        "endOffsets": "194,276,380,489,609,712,792"
+                    },
+                    "to": {
+                        "startLines": "433,436,437,438,439,440,441",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "30449,30724,30806,30910,31019,31139,31242",
+                        "endColumns": "143,81,103,108,119,102,79",
+                        "endOffsets": "30588,30801,30905,31014,31134,31237,31317"
+                    }
+                },
+                {
                     "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\b6678ea116e06ba0d1a58a95848f80b2\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,5,6,7,8,10,11,12,13,14",
@@ -133,7 +150,7 @@
                     }
                 },
                 {
-                    "source": "F:\\Captone_SourceCode\\mobile_v2\\solve_quation\\android\\app\\src\\main\\res\\values\\strings.xml",
+                    "source": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\android\\app\\src\\main\\res\\values\\strings.xml",
                     "from": {
                         "startLines": "2,3,4",
                         "startColumns": "4,4,4",
@@ -203,20 +220,22 @@
                     }
                 },
                 {
-                    "source": "F:\\Captone_SourceCode\\mobile_v2\\solve_quation\\build\\app\\generated\\res\\google-services\\debug\\values\\values.xml",
+                    "source": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\android\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
-                        "startLines": "2,3,4,5,6,7,8",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "55,199,281,385,494,614,717",
-                        "endColumns": "143,81,103,108,119,102,79",
-                        "endOffsets": "194,276,380,489,609,712,792"
+                        "startLines": "3,14",
+                        "startColumns": "4,4",
+                        "startOffsets": "137,791",
+                        "endLines": "7,16",
+                        "endColumns": "12,12",
+                        "endOffsets": "433,953"
                     },
                     "to": {
-                        "startLines": "433,436,437,438,439,440,441",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "30449,30724,30806,30910,31019,31139,31242",
-                        "endColumns": "143,81,103,108,119,102,79",
-                        "endOffsets": "30588,30801,30905,31014,31134,31237,31317"
+                        "startLines": "1541,1546",
+                        "startColumns": "4,4",
+                        "startOffsets": "102220,102517",
+                        "endLines": "1545,1548",
+                        "endColumns": "12,12",
+                        "endOffsets": "102512,102677"
                     }
                 },
                 {
@@ -255,25 +274,6 @@
                         "endLines": "2228,2235,2246,3444,3449",
                         "endColumns": "24,24,24,24,24",
                         "endOffsets": "150980,151365,151962,215614,215884"
-                    }
-                },
-                {
-                    "source": "F:\\Captone_SourceCode\\mobile_v2\\solve_quation\\android\\app\\src\\main\\res\\values\\styles.xml",
-                    "from": {
-                        "startLines": "3,14",
-                        "startColumns": "4,4",
-                        "startOffsets": "137,791",
-                        "endLines": "7,16",
-                        "endColumns": "12,12",
-                        "endOffsets": "433,953"
-                    },
-                    "to": {
-                        "startLines": "1541,1546",
-                        "startColumns": "4,4",
-                        "startOffsets": "102220,102517",
-                        "endLines": "1545,1548",
-                        "endColumns": "12,12",
-                        "endOffsets": "102512,102677"
                     }
                 },
                 {
