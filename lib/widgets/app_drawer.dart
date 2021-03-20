@@ -50,7 +50,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   height: 20,
                 ),
                 Text(
-                  user.refreshToken ?? "User",
+                  user.displayName ?? "User",
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
