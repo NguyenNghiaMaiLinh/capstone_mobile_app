@@ -2,8 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:solvequation/blocs/customer_service.dart';
+import 'package:solvequation/data/customer.dart';
 import 'package:solvequation/ui/home/home.dart';
 import 'package:solvequation/ui/home/login_facebook.dart';
+import 'package:solvequation/ui/home/login_gmail.dart';
 
 class FacebookSignupButtonWidget extends StatefulWidget {
   @override
@@ -55,11 +58,24 @@ class _LoginWithFacebookState extends State<FacebookSignupButtonWidget> {
 
   Future loginWithfacebook(FacebookLoginResult result) async {
     final FacebookAccessToken accessToken = result.accessToken;
+    CustomerService _customerService = new CustomerService();
+
     if (accessToken != null) {
       AuthCredential credential =
           FacebookAuthProvider.credential(accessToken.token);
       var a = await _auth.signInWithCredential(credential);
       if (a.user != null) {
+        Customer customer = new Customer(
+            null,
+            a.user.email,
+            a.user.uid,
+            a.user.phoneNumber,
+            a.user.displayName,
+            a.user.photoURL,
+            null,
+            1,
+            true);
+        _customerService.create(customer);
         Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       }
     }

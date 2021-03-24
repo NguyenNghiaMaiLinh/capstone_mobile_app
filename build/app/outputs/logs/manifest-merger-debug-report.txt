@@ -5,6 +5,7 @@ INJECTED from F:\Captone_SourceCode\mobile\capstone_mobile_app\android\app\src\m
 INJECTED from F:\Captone_SourceCode\mobile\capstone_mobile_app\android\app\src\main\AndroidManifest.xml:1:1-60:12
 INJECTED from F:\Captone_SourceCode\mobile\capstone_mobile_app\android\app\src\main\AndroidManifest.xml:1:1-60:12
 MERGED from F:\Captone_SourceCode\mobile\capstone_mobile_app\android\app\src\main\AndroidManifest.xml:1:1-60:12
+MERGED from [:flutter_secure_storage] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\flutter_secure_storage\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-11:12
 MERGED from [:google_sign_in] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\google_sign_in\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [:flutter_facebook_login] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\flutter_facebook_login\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:image_picker] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-22:12
@@ -282,6 +283,8 @@ uses-sdk
 INJECTED from F:\Captone_SourceCode\mobile\capstone_mobile_app\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from F:\Captone_SourceCode\mobile\capstone_mobile_app\android\app\src\main\AndroidManifest.xml
 INJECTED from F:\Captone_SourceCode\mobile\capstone_mobile_app\android\app\src\main\AndroidManifest.xml
+MERGED from [:flutter_secure_storage] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\flutter_secure_storage\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-9:41
+MERGED from [:flutter_secure_storage] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\flutter_secure_storage\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-9:41
 MERGED from [:google_sign_in] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\google_sign_in\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:google_sign_in] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\google_sign_in\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_facebook_login] F:\Captone_SourceCode\mobile\capstone_mobile_app\build\flutter_facebook_login\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44

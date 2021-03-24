@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:solvequation/blocs/customer_service.dart';
 import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/widgets/app_drawer.dart';
 import 'griddashboard.dart';
@@ -13,8 +14,10 @@ class HomeScreen extends StatefulWidget {
 
 class HomeState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   final user = FirebaseAuth.instance.currentUser;
+  final _customerService = new CustomerService();
   @override
   Widget build(BuildContext context) {
+    // _customerService.getUrl();
     return Scaffold(
       appBar: new AppBar(
         backgroundColor: kPrimaryColor,

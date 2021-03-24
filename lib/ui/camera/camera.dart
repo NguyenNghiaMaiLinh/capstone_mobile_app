@@ -585,22 +585,6 @@ class _CameraPage extends State<CameraPage>
     );
   }
 
-  // Future<void> _openImage() async {
-  //   final file = await ImagePicker.pickImage(source: ImageSource.gallery);
-  //   final sample = await ImageCrop.sampleImage(
-  //     file: file,
-  //     preferredSize: context.size.longestSide.ceil(),
-  //   );
-
-  //   _selectedFile?.delete();
-  //   _file?.delete();
-
-  //   setState(() {
-  //     _selectedFile = sample;
-  //     _file = file;
-  //   });
-  // }
-
   Future<void> _cropImage(File _sample) async {
     final scale = cropKey.currentState.scale;
     final area = cropKey.currentState.area;

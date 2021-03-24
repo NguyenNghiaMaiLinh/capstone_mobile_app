@@ -12,7 +12,7 @@ class GridDashboard extends StatelessWidget {
   Items item2 = new Items(
     title: "History",
     subtitle: "Images you saved",
-    link: "",
+    link: Routes.history,
     img: "assets/icons/exam.png",
   );
   // Items item3 = new Items(
