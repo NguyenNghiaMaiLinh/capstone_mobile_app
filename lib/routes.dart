@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:solvequation/ui/camera/camera.dart';
+import 'package:solvequation/ui/home/detail_history.dart';
 import 'package:solvequation/ui/home/history_screen.dart';
 import 'package:solvequation/ui/home/home.dart';
 import 'package:solvequation/ui/home/login_gmail.dart';
@@ -11,6 +12,7 @@ class Routes {
   static const String splash = SplashPage.routeName;
   static const String login = LoginScreen.routeName;
   static const String history = HistoryScreen.routeName;
+  static const String detail_history = DetailHistory.routeName;
 
   static getRoutes(BuildContext context) {
     return {
@@ -19,6 +21,7 @@ class Routes {
       splash: (context) => SplashPage(),
       login: (context) => LoginScreen(),
       history: (context) => HistoryScreen(),
+      detail_history: (context) => DetailHistory(null),
     };
   }
 }

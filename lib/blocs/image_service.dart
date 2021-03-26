@@ -7,7 +7,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:solvequation/data/history.dart';
 import 'package:solvequation/data/result.dart';
-import 'package:solvequation/constants/constants.dart';
 
 class ImageService {
   Future<ResultItem> Upload(File imageFile) async {
@@ -44,33 +43,56 @@ class ImageService {
 
   // Future<List<History>> getHistory(String id) async {
   //   final storage = new FlutterSecureStorage();
+  //   List<History> result = <History>[];
   //   String url = await storage.read(key: "url");
-  //   http.get('$url/users/$id/images').then((result) {
-  //     if (result.statusCode == 200) {
-  //       final response = json.decode(result.body);
-  //       var datas = History.fromJson(response);
-  //       print(datas);
-  //       return datas;
+  //   String id_new = await storage.read(key: "id");
+  //   await http.get('$url/users/$id/images').then((response) {
+  //     if (response.statusCode == 200) {
+  //       if (response.body != null) {
+  //         result = (json.decode(response.body) as List)
+  //             .map((i) => History.fromJson(i))
+  //             .toList();
+  //       }
   //     } else {
-  //       return null;
+  //       return result;
   //     }
   //   });
+  //   return result;
   // }
-  Future<List<History>> getHistory(String id) async {
-    final storage = new FlutterSecureStorage();
-    String url = await storage.read(key: "url");
-    var response = await http.get('https://api.mocki.io/v1/34605ff8');
-    if (response.statusCode == 200) {
-      List<History> result = <History>[];
-      if (response.body != null) {
-        result = (json.decode(response.body) as List)
-            .map((i) => History.fromJson(i))
-            .toList();
-      }
 
-      return result;
-    } else {
-      return null;
-    }
+  Future<List<History>> getHistory(int id) async {
+    final storage = new FlutterSecureStorage();
+    List<History> result = <History>[];
+    String url = await storage.read(key: "url");
+    String id_new = await storage.read(key: "id");
+    await http.get("https://api.mocki.io/v1/6ca9ab7a").then((response) {
+      if (response.statusCode == 200) {
+        if (response.body != null) {
+          result = (json.decode(response.body) as List)
+              .map((i) => History.fromJson(i))
+              .toList();
+        }
+      } else {
+        return result;
+      }
+    });
+    return result;
+  }
+
+  Future<History> getHistoryDetail(int id) async {
+    final storage = new FlutterSecureStorage();
+    History result = null;
+    String url = await storage.read(key: "url");
+    String id_new = await storage.read(key: "id");
+    await http.get("https://api.mocki.io/v1/55211716").then((response) {
+      if (response.statusCode == 200) {
+        if (response.body != null) {
+          result = History.fromJson(json.decode(response.body));
+        }
+      } else {
+        return result;
+      }
+    });
+    return result;
   }
 }

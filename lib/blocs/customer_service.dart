@@ -1,5 +1,4 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/data/customer.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -12,7 +11,7 @@ class CustomerService {
     var body = customer.toJson();
     http
         .post(
-      'https://api.mocki.io/v1/184c1f25',
+      '$url/users',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -65,7 +64,7 @@ class CustomerService {
 
   Future getUrl() async {
     http
-        .get("https://fuslqewebapi20210320190107.azurewebsites.net/api/url/1")
+        .get("http://url-env.eba-rvk73mrv.ap-southeast-1.elasticbeanstalk.com/api/url/1")
         .then((result) {
       String url = json.decode(result.body)['url'];
       final storage = new FlutterSecureStorage();

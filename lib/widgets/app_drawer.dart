@@ -33,6 +33,40 @@ class _AppDrawerState extends State<AppDrawer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                    width: 40,
+                    height: 40,
+                    color: Colors.white10,
+                    child: CircleAvatar(
+                        backgroundImage: AssetImage('assets/icons/math.png'),
+                        backgroundColor: Colors.white10),
+                  ),
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: Text(
+                        "Solve equation",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87),
+                      )),
+                ]),
+          ),
+          Divider(
+            color: Colors.black,
+            height: 1,
+          ),
           DrawerHeader(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,18 +91,47 @@ class _AppDrawerState extends State<AppDrawer> {
                       color: Colors.black87),
                 ),
                 SizedBox(
-                  height: 3,
-                ),
-                Text(
-                  user.email ?? "",
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black45),
+                  height: 8,
                 ),
               ],
             ),
           ),
+          (user.email.isNotEmpty)
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Text(
+                        "Email",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black54),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.12,
+                            child: Icon(
+                              Icons.email_outlined,
+                              color: Colors.black54,
+                            )),
+                        Text(
+                          user.email,
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black45),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : Center(),
           Expanded(
             child: Align(
               alignment: FractionalOffset.bottomCenter,

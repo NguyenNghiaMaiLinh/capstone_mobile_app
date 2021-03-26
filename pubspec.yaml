@@ -37,7 +37,10 @@ dependencies:
   path: ^1.7.0
   flutter_tex: ^3.6.7+10
   flutter_secure_storage: ^4.1.0
-
+  intl: ^0.16.1
+  flutter_placeholder_textlines: ^1.0.4
+  shimmer: ^1.1.2
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,11 +1,11 @@
 [
     {
-        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_abc_scrubber_control_to_pressed_mtrl_005.png.flat",
-        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable-hdpi-v4\\abc_scrubber_control_to_pressed_mtrl_005.png"
-    },
-    {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\layout_com_facebook_activity_layout.xml.flat",
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\00de4cc070f8d505acae9e54b32175bb\\res\\layout\\com_facebook_activity_layout.xml"
+    },
+    {
+        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_abc_scrubber_control_to_pressed_mtrl_005.png.flat",
+        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable-hdpi-v4\\abc_scrubber_control_to_pressed_mtrl_005.png"
     },
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_ic_star_black_36dp.png.flat",
@@ -80,12 +80,12 @@
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\07f935d4cd3f7546871a4e2860f9648c\\res\\drawable-hdpi-v4\\googleg_disabled_color_18.png"
     },
     {
-        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_abc_item_background_holo_light.xml.flat",
-        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable\\abc_item_background_holo_light.xml"
-    },
-    {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_com_facebook_button_like_icon_selected.png.flat",
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\00de4cc070f8d505acae9e54b32175bb\\res\\drawable-hdpi-v4\\com_facebook_button_like_icon_selected.png"
+    },
+    {
+        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_abc_item_background_holo_light.xml.flat",
+        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable\\abc_item_background_holo_light.xml"
     },
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_common_google_signin_btn_text_light_normal_background.9.png.flat",
@@ -196,12 +196,12 @@
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable-v21\\abc_btn_colored_material.xml"
     },
     {
-        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_list_pressed_holo_light.9.png.flat",
-        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable-xhdpi-v4\\abc_list_pressed_holo_light.9.png"
-    },
-    {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\layout_custom_dialog.xml.flat",
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\7484a29ca8c6df813aa07b76b7a429e1\\res\\layout\\custom_dialog.xml"
+    },
+    {
+        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_list_pressed_holo_light.9.png.flat",
+        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable-xhdpi-v4\\abc_list_pressed_holo_light.9.png"
     },
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\layout_ucrop_fragment_photobox.xml.flat",
@@ -236,12 +236,12 @@
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\07f935d4cd3f7546871a4e2860f9648c\\res\\drawable-mdpi-v4\\common_google_signin_btn_icon_dark_normal_background.9.png"
     },
     {
-        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_btn_radio_off_mtrl.xml.flat",
-        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable\\btn_radio_off_mtrl.xml"
-    },
-    {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_abc_btn_radio_to_on_mtrl_015.png.flat",
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable-hdpi-v4\\abc_btn_radio_to_on_mtrl_015.png"
+    },
+    {
+        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_btn_radio_off_mtrl.xml.flat",
+        "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable\\btn_radio_off_mtrl.xml"
     },
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_ucrop_ic_next.xml.flat",
@@ -922,6 +922,10 @@
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_ucrop_ic_scale.xml.flat",
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\20cf8860457f8a284f61af4d8974a0ef\\res\\drawable\\ucrop_ic_scale.xml"
+    },
+    {
+        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-v21_launch_background.xml.flat",
+        "source": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\android\\app\\src\\main\\res\\drawable-v21\\launch_background.xml"
     },
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_common_google_signin_btn_icon_dark_normal_background.9.png.flat",
@@ -2146,10 +2150,6 @@
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxxhdpi-v4_abc_btn_check_to_on_mtrl_000.png.flat",
         "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-2\\files-2.1\\af1c8d313aa3e45e2eb7c2d3c108b2fd\\res\\drawable-xxxhdpi-v4\\abc_btn_check_to_on_mtrl_000.png"
-    },
-    {
-        "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_launch_background.xml.flat",
-        "source": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\android\\app\\src\\main\\res\\drawable\\launch_background.xml"
     },
     {
         "merged": "F:\\Captone_SourceCode\\mobile\\capstone_mobile_app\\build\\app\\intermediates\\res\\merged\\debug\\drawable_btn_radio_off_to_on_mtrl_animation.xml.flat",

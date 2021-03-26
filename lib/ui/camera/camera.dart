@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:solvequation/blocs/image_service.dart';
 import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/data/root.dart';
-import 'package:solvequation/ui/camera/edit.dart';
 import 'package:solvequation/ui/home/home.dart';
 import 'package:solvequation/data/result.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -85,14 +84,38 @@ class _CameraPage extends State<CameraPage>
             fit: BoxFit.fitWidth,
           ));
     } else {
-      return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
-          child: Image.asset(
-            "assets/images/placeholder.png",
-            width: MediaQuery.of(context).size.width,
-            height: 200,
-            fit: BoxFit.fitWidth,
-          ));
+      return Column(
+        children: [
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10)),
+                  child: Image.network(
+                    "https://www.mathcalculator.org/wp-content/uploads/2019/09/cta-banner.png",
+                    width: MediaQuery.of(context).size.width,
+                    height: 80,
+                    fit: BoxFit.fitWidth,
+                  ))),
+          Padding(
+              padding: EdgeInsets.fromLTRB(20, 5, 20, 35),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10)),
+                  child: Image.asset(
+                    "assets/images/placeholder.png",
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    fit: BoxFit.fitWidth,
+                  )))
+        ],
+      );
     }
   }
 
@@ -237,6 +260,7 @@ class _CameraPage extends State<CameraPage>
                                     onPressed: () {
                                       setState(() {
                                         _inProcess = true;
+                                        isDevice = false;
                                       });
                                       _imageService.Upload(_selectedFile)
                                           .then((result) {
@@ -260,10 +284,21 @@ class _CameraPage extends State<CameraPage>
                             : (_isSuccess)
                                 ? Column(
                                     children: <Widget>[
-                                      // spinkit,
                                       Padding(
                                         padding: EdgeInsets.symmetric(
-                                            horizontal: 25, vertical: 10),
+                                            horizontal: 5, vertical: 10),
+                                        child: Text(
+                                          "Simplification",
+                                          style: GoogleFonts.openSans(
+                                              textStyle: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 8, 20, 8),
                                         child: TeXView(
                                           child: TeXViewColumn(children: [
                                             TeXViewInkWell(
@@ -297,7 +332,7 @@ class _CameraPage extends State<CameraPage>
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 5, vertical: 10),
                                         child: Text(
-                                          "Result: ",
+                                          "Solution",
                                           style: GoogleFonts.openSans(
                                               textStyle: TextStyle(
                                                   color: Colors.black87,
@@ -336,11 +371,46 @@ class _CameraPage extends State<CameraPage>
                                                       ))
                                                 ]));
                                           }),
-                                      Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 50, vertical: 5),
-                                          child: SizedBox(
-                                            width: double.infinity,
+                                      Row(
+                                        children: [
+                                          FlatButton(
+                                            onPressed: () {},
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              height: 50,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Save',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.blueAccent,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            textColor: Colors.blueAccent,
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: Colors.blueAccent,
+                                                    width: 1,
+                                                    style: BorderStyle.solid),
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6,
                                             height: 56,
                                             child: FlatButton(
                                               shape: RoundedRectangleBorder(
@@ -364,7 +434,9 @@ class _CameraPage extends State<CameraPage>
                                                 ),
                                               ),
                                             ),
-                                          ))
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   )
                                 : Column(
@@ -456,11 +528,48 @@ class _CameraPage extends State<CameraPage>
                                                 ),
                                               ],
                                             ),
-                                      Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 50, vertical: 5),
-                                          child: SizedBox(
-                                            width: double.infinity,
+                                      Row(
+                                        children: [
+                                          FlatButton(
+                                            onPressed: () {
+                                              getImage(ImageSource.gallery);
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              height: 50,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Save',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.blueAccent,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            textColor: Colors.blueAccent,
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: Colors.blueAccent,
+                                                    width: 1,
+                                                    style: BorderStyle.solid),
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6,
                                             height: 56,
                                             child: FlatButton(
                                               shape: RoundedRectangleBorder(
@@ -469,6 +578,7 @@ class _CameraPage extends State<CameraPage>
                                                           20)),
                                               color: kPrimaryColor,
                                               onPressed: () => {
+                                                imageCache.clear(),
                                                 Navigator.of(context).push(
                                                     MaterialPageRoute(
                                                         builder: (context) =>
@@ -483,15 +593,18 @@ class _CameraPage extends State<CameraPage>
                                                 ),
                                               ),
                                             ),
-                                          ))
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               AnimatedButton(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 8, 20, 8),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -514,39 +627,75 @@ class _CameraPage extends State<CameraPage>
                                 onPressed: () {
                                   takeImage(ImageSource.camera);
                                 },
-                                width: MediaQuery.of(context).size.width * 0.45,
+                                width: MediaQuery.of(context).size.width * 0.9,
                                 shadowDegree: ShadowDegree.light,
-                                color: kAccentColor,
+                                color: kPrimaryColor,
                               ),
-                              AnimatedButton(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                              SizedBox(height: 16),
+                              FlatButton(
+                                onPressed: () {
+                                  getImage(ImageSource.gallery);
+                                },
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  height: 50,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Icon(
-                                        Icons.photo_library,
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(width: 6),
+                                      // Icon(
+                                      //   Icons.photo_library,
+                                      //   color: Colors.green,
+                                      // ),
+                                      // SizedBox(width: 6),
                                       Text(
-                                        'Device',
+                                        'From Library',
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color: Colors.green,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                onPressed: () {
-                                  getImage(ImageSource.gallery);
-                                },
-                                width: MediaQuery.of(context).size.width * 0.45,
-                                shadowDegree: ShadowDegree.light,
-                                color: Colors.green,
+                                textColor: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: Colors.green,
+                                        width: 1,
+                                        style: BorderStyle.solid),
+                                    borderRadius: BorderRadius.circular(15)),
                               ),
+                              // AnimatedButton(
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.all(8.0),
+                              //     child: Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: <Widget>[
+                              //         Icon(
+                              //           Icons.photo_library,
+                              //           color: Colors.white,
+                              //         ),
+                              //         SizedBox(width: 6),
+                              //         Text(
+                              //           'Device',
+                              //           style: TextStyle(
+                              //             fontSize: 18,
+                              //             color: Colors.white,
+                              //             fontWeight: FontWeight.w500,
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              //   onPressed: () {
+                              //     getImage(ImageSource.gallery);
+                              //   },
+                              //   width: MediaQuery.of(context).size.width * 0.45,
+                              //   shadowDegree: ShadowDegree.light,
+                              //   color: Colors.green,
+                              // ),
                             ],
                           ),
                   ],

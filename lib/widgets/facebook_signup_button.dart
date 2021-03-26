@@ -5,8 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:solvequation/blocs/customer_service.dart';
 import 'package:solvequation/data/customer.dart';
 import 'package:solvequation/ui/home/home.dart';
-import 'package:solvequation/ui/home/login_facebook.dart';
-import 'package:solvequation/ui/home/login_gmail.dart';
 
 class FacebookSignupButtonWidget extends StatefulWidget {
   @override
