@@ -1,10 +1,11 @@
+import 'package:custom_switch/custom_switch.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:solvequation/constants/constants.dart';
-import 'package:solvequation/provider/google_sign_in.dart';
 import 'package:solvequation/routes.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -17,7 +18,9 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   final user = FirebaseAuth.instance.currentUser;
+  bool auto = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
   FacebookLogin facebookLogin = FacebookLogin();
   @override
@@ -26,6 +29,14 @@ class _AppDrawerState extends State<AppDrawer> {
       width: MediaQuery.of(context).size.width * 0.8,
       child: buildDrawer(context),
     );
+  }
+
+  _logout() {
+    _googleSignIn.signOut();
+    if (facebookLogin.isLoggedIn != null) {
+      facebookLogin.logOut();
+    }
+    _auth.signOut();
   }
 
   Drawer buildDrawer(BuildContext context) {
@@ -96,42 +107,66 @@ class _AppDrawerState extends State<AppDrawer> {
               ],
             ),
           ),
-          (user.email.isNotEmpty)
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Text(
+                    "Email",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black54),
+                  ),
+                ),
+                Row(
                   children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: Text(
-                        "Email",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black54),
-                      ),
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.12,
+                        child: Icon(
+                          Icons.email_outlined,
+                          color: Colors.black54,
+                        )),
+                    Text(
+                      user.email ?? "...",
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black45),
                     ),
-                    Row(
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Row(
                       children: [
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.12,
-                            child: Icon(
-                              Icons.email_outlined,
-                              color: Colors.black54,
-                            )),
                         Text(
-                          user.email,
+                          "Auto save",
                           style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: Colors.black45),
                         ),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        CustomSwitch(
+                          activeColor: kPrimaryColor,
+                          value: auto,
+                          onChanged: (value) {
+                            final storage = new FlutterSecureStorage();
+                            storage.delete(key: "auto");
+                            storage.write(key: "auto", value: value.toString());
+                          },
+                        ),
                       ],
-                    ),
-                  ],
-                )
-              : Center(),
+                    )),
+              ]),
           Expanded(
             child: Align(
               alignment: FractionalOffset.bottomCenter,
@@ -143,9 +178,9 @@ class _AppDrawerState extends State<AppDrawer> {
                   color: kPrimaryColor,
                   height: 50,
                   onPressed: () async {
-                    // Navigator.pushReplacementNamed(context, Routes.login);
+                    _logout();
+                    Navigator.pushReplacementNamed(context, Routes.login);
                     // context.read<AuthenticationService>().signOut();
-                    await logout();
                   },
                   child: Row(
                     children: [
@@ -175,21 +210,21 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Future<void> logout() async {
-    var tokenFB = facebookLogin.currentAccessToken.then((token) {
-      if (token != null) {
-        _auth.signOut().then((onValue) {
-          facebookLogin.logOut();
-        });
-      } else {
-        final provider =
-            Provider.of<GoogleSignInProvider>(context, listen: false);
-        provider.logout();
-        _auth.signOut().then((onValue) {
-          facebookLogin.logOut();
-        });
-      }
-    });
-    Navigator.pushReplacementNamed(context, Routes.login);
-  }
+  // Future<void> logout() async {
+  //   var tokenFB = facebookLogin.currentAccessToken.then((token) {
+  //     if (token != null) {
+  //       _auth.signOut().then((onValue) {
+  //         facebookLogin.logOut();
+  //       });
+  //     } else {
+  //       final provider =
+  //           Provider.of<GoogleSignInProvider>(context, listen: false);
+  //       provider.logout();
+  //       _auth.signOut().then((onValue) {
+  //         facebookLogin.logOut();
+  //       });
+  //     }
+  //   });
+  //   Navigator.pushReplacementNamed(context, Routes.login);
+  // }
 }

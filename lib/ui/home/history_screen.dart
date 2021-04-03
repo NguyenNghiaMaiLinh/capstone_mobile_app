@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,8 +7,10 @@ import 'package:shimmer/shimmer.dart';
 import 'package:solvequation/blocs/image_service.dart';
 import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/data/history.dart';
+import 'package:solvequation/routes.dart';
 import 'package:solvequation/ui/home/detail_history.dart';
-import 'package:solvequation/ui/home/home.dart';
+import 'package:solvequation/ui/home/home_screen.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HistoryScreen extends StatefulWidget {
   static const String routeName = "/history";
@@ -18,21 +19,50 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryState extends State<HistoryScreen> {
+  ScrollController _scrollController = new ScrollController();
   ImageService _imageService = new ImageService();
   int id = 1;
   bool _idLoading = true;
-  List<History> _data = null;
+  HistoryData _data;
+  int page = 0;
+
   @override
   void initState() {
     super.initState();
-    _imageService.getHistory(id).then((value) {
+    _imageService.getHistory(page).then((value) {
       if (value != null) {
+        if (value.statusCode == 401) {
+          Navigator.of(context).pushReplacementNamed(Routes.login);
+        }
         setState(() {
           _data = value;
           _idLoading = false;
         });
       }
     });
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _imageService.getHistory(page + 1).then((value) {
+          print(page);
+          if (value != null) {
+            if (value.statusCode == 401) {
+              Navigator.of(context).pushReplacementNamed(Routes.login);
+            }
+            setState(() {
+              _data.histories.addAll(value.histories);
+              _idLoading = false;
+            });
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -62,87 +92,116 @@ class _HistoryState extends State<HistoryScreen> {
       body: Column(
         children: <Widget>[
           (!_idLoading)
-              ? (_data != null && _data?.length > 0)
+              ? (_data?.histories?.length > 0)
                   ? Expanded(
-                      
-                      child: SizedBox(
-                        height: 120.0,
-                        child: new ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: _data?.length ?? 0,
+                      child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: _data.histories.length,
                           itemBuilder: (BuildContext context, int index) {
-                            History _item = _data[index];
-                            return  InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => DetailHistory(_item.id)));
-                       }, child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: Colors.grey[350],
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  (_item.url != null)
-                                      ? ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(15),
-                                              topRight: Radius.circular(15),
-                                              bottomLeft: Radius.circular(0),
-                                              bottomRight: Radius.circular(0)),
-                                          child: Image.network('${_item.url}',
+                            History _item = _data.histories[index];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                                ),
+                                (_item.url != null)
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15),
+                                            topRight: Radius.circular(15),
+                                            bottomLeft: Radius.circular(0),
+                                            bottomRight: Radius.circular(0)),
+                                        child: Image.network('${_item.url}',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.92,
+                                            height: 60,
+                                            fit: BoxFit.fill))
+                                    : AssetImage(
+                                        'assets/images/placeholder.png'),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(0),
+                                      topRight: Radius.circular(0),
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)),
+                                  child:
+                                      //KaTeX(
+                                      //   laTeXCode: Text(_item.latex,
+                                      //       style: Theme.of(context)
+                                      //           .textTheme
+                                      //           .bodyText1),
+                                      // ),
+                                      (_item.latex == "")
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(0),
+                                                  topRight: Radius.circular(0),
+                                                  bottomLeft:
+                                                      Radius.circular(15),
+                                                  bottomRight:
+                                                      Radius.circular(15)),
+                                              child: Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.92,
+                                                  height: 60.0,
+                                                  color: Colors.grey[350],
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: Text(
+                                                      _item.message,
+                                                      style: new TextStyle(
+                                                          fontSize: 14.0,
+                                                          color:
+                                                              Colors.black87),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  )),
+                                            )
+                                          : Container(
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
                                                   0.92,
-                                              height: 70,
-                                              fit: BoxFit.fill))
-                                      : AssetImage(
-                                          'assets/images/placeholder.png'),
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(0),
-                                        topRight: Radius.circular(0),
-                                        bottomLeft: Radius.circular(15),
-                                        bottomRight: Radius.circular(15)),
-                                    child: TeXView(
-                                      child: TeXViewColumn(children: [
-                                        TeXViewInkWell(
-                                          id: "id_0",
-                                          child: TeXViewColumn(children: [
-                                            TeXViewDocument('${_item.latex}',
+                                              height: 60.0,
+                                              color: Colors.grey[350],
+                                              child: TeXView(
+                                                renderingEngine:
+                                                    const TeXViewRenderingEngine
+                                                        .katex(),
+                                                child: TeXViewDocument(
+                                                    _item.latex,
+                                                    style: TeXViewStyle(
+                                                        textAlign:
+                                                            TeXViewTextAlign
+                                                                .Center)),
                                                 style: TeXViewStyle(
-                                                    textAlign: TeXViewTextAlign
-                                                        .Center)),
-                                          ]),
-                                        )
-                                      ]),
-                                      style: TeXViewStyle(
-                                        backgroundColor: Colors.grey[350],
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 5),
-                                    child: Text(
-                                      '${_item.dateTime}',
-                                      style: GoogleFonts.openSans(
-                                          textStyle: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 12,
-                                      )),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),);
-                          },
-                        ),
-                      )
-                    )
+                                                  elevation: 10,
+                                                  backgroundColor:
+                                                      Colors.grey[350],
+                                                ),
+                                              ),
+                                            ),
+                                ),
+                                Text(
+                                  _item.dateTime,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.openSans(
+                                      textStyle: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                              ],
+                            );
+                          }))
                   : Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
@@ -186,7 +245,7 @@ class _HistoryState extends State<HistoryScreen> {
                           ],
                         ),
                       ),
-                      itemCount: 3,
+                      itemCount: 5,
                     ),
                   ),
                 ),

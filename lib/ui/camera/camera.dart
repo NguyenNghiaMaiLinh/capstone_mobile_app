@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_crop/image_crop.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:katex_flutter/katex_flutter.dart';
 import 'package:solvequation/blocs/image_service.dart';
 import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/data/root.dart';
-import 'package:solvequation/ui/home/home.dart';
+import 'package:solvequation/ui/camera/result.dart';
+import 'package:solvequation/ui/home/home_screen.dart';
 import 'package:solvequation/data/result.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:animated_button/animated_button.dart';
@@ -27,6 +29,7 @@ class _CameraPage extends State<CameraPage>
   bool isDevice = false;
   bool _inProcess = false;
   bool _isCrop = false;
+  bool _value = false;
   bool _isSuccess = false;
   File _selectedFile;
   bool _output = false;
@@ -66,14 +69,16 @@ class _CameraPage extends State<CameraPage>
           _inProcess = true;
         });
         _imageService.Upload(_selectedFile).then((result) {
-          setState(() {
-            _output = true;
-            _item = result;
-            _inProcess = false;
-            _isSuccess = result.success;
-            isDevice = false;
-            _isCrop = false;
-          });
+          if (result != null) {
+            setState(() {
+              _output = true;
+              _item = result;
+              _inProcess = false;
+              _isSuccess = result.success;
+              isDevice = false;
+              _isCrop = false;
+            });
+          }
         });
       }
       return Padding(
@@ -163,20 +168,22 @@ class _CameraPage extends State<CameraPage>
         : Scaffold(
             resizeToAvoidBottomInset: false, // set it to false
             appBar: AppBar(
-                title: new Text(
-                  'Solve Equation',
-                  style: new TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                      color: Colors.white),
-                ),
-                backgroundColor: kPrimaryColor,
-                leading: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => HomeScreen()))
-                        })),
+              title: new Text(
+                'Solve Equation',
+                style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    color: Colors.white),
+              ),
+              backgroundColor: kPrimaryColor,
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => HomeScreen()))
+                      }),
+            ),
+
             body: SingleChildScrollView(
                 child: Column(
               children: <Widget>[
@@ -197,407 +204,342 @@ class _CameraPage extends State<CameraPage>
                         : Center(),
                     (_output)
                         ? (isDevice)
-                            ? Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  AnimatedButton(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.mode_edit,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(width: 6),
-                                          Text(
-                                            'Edit',
-                                            style: TextStyle(
-                                              fontSize: 18,
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    AnimatedButton(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Icon(
+                                              Icons.mode_edit,
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w500,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        edit = true;
-                                      });
-                                    },
-                                    width: MediaQuery.of(context).size.width *
-                                        0.45,
-                                    shadowDegree: ShadowDegree.dark,
-                                    color: Colors.blueGrey,
-                                  ),
-                                  AnimatedButton(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.done_outline_rounded,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(width: 6),
-                                          Text(
-                                            'Detect',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
+                                            SizedBox(width: 6),
+                                            Text(
+                                              'Edit',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _inProcess = true;
-                                        isDevice = false;
-                                      });
-                                      _imageService.Upload(_selectedFile)
-                                          .then((result) {
-                                        print(result);
+                                      onPressed: () {
                                         setState(() {
-                                          _output = true;
-                                          _isSuccess = result.success;
-                                          _item = result;
-                                          isDevice = false;
-                                          _inProcess = false;
+                                          edit = true;
                                         });
-                                      });
-                                    },
-                                    width: MediaQuery.of(context).size.width *
-                                        0.45,
-                                    shadowDegree: ShadowDegree.dark,
-                                    color: Colors.green[600],
-                                  ),
-                                ],
-                              )
-                            : (_isSuccess)
-                                ? Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 10),
-                                        child: Text(
-                                          "Simplification",
-                                          style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 8, 20, 8),
-                                        child: TeXView(
-                                          child: TeXViewColumn(children: [
-                                            TeXViewInkWell(
-                                              id: "id_0",
-                                              child: TeXViewColumn(children: [
-                                                TeXViewDocument(
-                                                    '${_item?.latex}',
-                                                    style: TeXViewStyle(
-                                                        textAlign:
-                                                            TeXViewTextAlign
-                                                                .Center)),
-                                              ]),
-                                            )
-                                          ]),
-                                          style: TeXViewStyle(
-                                            elevation: 10,
-                                            borderRadius:
-                                                TeXViewBorderRadius.all(15),
-                                            border: TeXViewBorder.all(
-                                                TeXViewBorderDecoration(
-                                                    borderColor: kPrimaryColor,
-                                                    borderStyle:
-                                                        TeXViewBorderStyle
-                                                            .Double,
-                                                    borderWidth: 5)),
-                                            backgroundColor: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 10),
-                                        child: Text(
-                                          "Solution",
-                                          style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                      ),
-                                      ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: _item?.roots?.length ?? 0,
-                                          itemBuilder:
-                                              (BuildContext ctxt, int index) {
-                                            return Container(
-                                                margin: EdgeInsets.only(
-                                                    bottom: 20, left: 80),
-                                                child: Row(children: [
-                                                  Flexible(
-                                                      flex: 2,
-                                                      child: Row(
-                                                        children: <Widget>[
-                                                          Flexible(
-                                                            child: Text(
-                                                              '${_item?.roots[index]}',
-                                                              style: GoogleFonts.openSans(
-                                                                  textStyle: TextStyle(
-                                                                      color: Colors
-                                                                          .black87,
-                                                                      fontSize:
-                                                                          18,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold)),
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ))
-                                                ]));
-                                          }),
-                                      Row(
-                                        children: [
-                                          FlatButton(
-                                            onPressed: () {},
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2,
-                                              height: 50,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Save',
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      color: Colors.blueAccent,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ],
+                                      },
+                                      width: MediaQuery.of(context).size.width *
+                                          0.45,
+                                      shadowDegree: ShadowDegree.dark,
+                                      color: Colors.blueGrey,
+                                    ),
+                                    AnimatedButton(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Icon(
+                                              Icons.done_outline_rounded,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(width: 6),
+                                            Text(
+                                              'Detect',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
-                                            textColor: Colors.blueAccent,
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                    color: Colors.blueAccent,
-                                                    width: 1,
-                                                    style: BorderStyle.solid),
-                                                borderRadius:
-                                                    BorderRadius.circular(15)),
+                                          ],
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _inProcess = true;
+                                          isDevice = false;
+                                        });
+                                        _imageService.Upload(_selectedFile)
+                                            .then((result) {
+                                          if (result != null) {
+                                            setState(() {
+                                              _output = true;
+                                              _isSuccess = result.success;
+                                              _item = result;
+                                              isDevice = false;
+                                              _inProcess = false;
+                                            });
+                                          }
+                                        });
+                                      },
+                                      width: MediaQuery.of(context).size.width *
+                                          0.45,
+                                      shadowDegree: ShadowDegree.dark,
+                                      color: Colors.green[600],
+                                    ),
+                                  ],
+                                ))
+                            : (_item != null)
+                                ? (_isSuccess)
+                                    ? Column(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 10),
+                                            child: Text(
+                                              "Expression",
+                                              style: GoogleFonts.openSans(
+                                                  textStyle: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ),
+                                          ),
+                                          Divider(
+                                            color: Colors.black,
+                                            height: 1,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                20, 8, 20, 8),
+                                            child: KaTeX(
+                                              laTeXCode: Text(_item.latex,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2),
+                                            ),
+                                          ),
+                                          Divider(
+                                            color: Colors.black,
+                                            height: 1,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 10),
+                                            child: Text(
+                                              "Result",
+                                              style: GoogleFonts.openSans(
+                                                  textStyle: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ),
                                           ),
                                           SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.6,
-                                            height: 56,
-                                            child: FlatButton(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              color: kPrimaryColor,
-                                              onPressed: () => {
-                                                imageCache.clear(),
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            CameraPage(
-                                                                null, false)))
-                                              },
-                                              child: Text(
-                                                "Continue",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                : Column(
-                                    children: <Widget>[
-                                      // spinkit,
-                                      (_item.latex.isNotEmpty)
-                                          ? Column(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 25,
-                                                      vertical: 10),
-                                                  child: TeXView(
-                                                    child: TeXViewColumn(
-                                                        children: [
-                                                          TeXViewInkWell(
-                                                            id: "id_0",
-                                                            child:
-                                                                TeXViewColumn(
-                                                                    children: [
-                                                                  TeXViewDocument(
-                                                                      '${_item?.latex}',
-                                                                      style: TeXViewStyle(
-                                                                          textAlign:
-                                                                              TeXViewTextAlign.Center)),
-                                                                ]),
-                                                          )
-                                                        ]),
-                                                    style: TeXViewStyle(
-                                                      elevation: 10,
+                                            height: 10,
+                                          ),
+                                          ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount:
+                                                  _item?.roots?.length ?? 0,
+                                              itemBuilder: (BuildContext ctxt,
+                                                  int index) {
+                                                return Container(
+                                                    margin: EdgeInsets.only(
+                                                        bottom: 20, left: 80),
+                                                    child: Row(children: [
+                                                      Flexible(
+                                                          flex: 2,
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              Flexible(
+                                                                child: Text(
+                                                                  '${_item?.roots[index]}',
+                                                                  style: GoogleFonts.openSans(
+                                                                      textStyle: TextStyle(
+                                                                          color: Colors
+                                                                              .black87,
+                                                                          fontSize:
+                                                                              18,
+                                                                          fontWeight:
+                                                                              FontWeight.bold)),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ))
+                                                    ]));
+                                              }),
+                                          Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 25, vertical: 10),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.9,
+                                                height: 56,
+                                                child: FlatButton(
+                                                  shape: RoundedRectangleBorder(
                                                       borderRadius:
-                                                          TeXViewBorderRadius
-                                                              .all(15),
-                                                      border: TeXViewBorder.all(
-                                                          TeXViewBorderDecoration(
-                                                              borderColor:
-                                                                  kPrimaryColor,
-                                                              borderStyle:
-                                                                  TeXViewBorderStyle
-                                                                      .Double,
-                                                              borderWidth: 5)),
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 10),
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  color: kPrimaryColor,
+                                                  onPressed: () => {
+                                                    imageCache.clear(),
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    CameraPage(
+                                                                        null,
+                                                                        false)))
+                                                  },
                                                   child: Text(
-                                                    _item.message,
-                                                    style: GoogleFonts.openSans(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                Colors.black54,
-                                                            fontSize: 16)),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : Column(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 10),
-                                                  child: Text(
-                                                    _item.message,
-                                                    style: GoogleFonts.openSans(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                Colors.black54,
-                                                            fontSize: 16)),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 10),
-                                                  child: Text(
-                                                    _item.expression,
-                                                    style: GoogleFonts.openSans(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                Colors.black54,
-                                                            fontSize: 16)),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                      Row(
-                                        children: [
-                                          FlatButton(
-                                            onPressed: () {
-                                              getImage(ImageSource.gallery);
-                                            },
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2,
-                                              height: 50,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Save',
+                                                    "Continue",
                                                     style: TextStyle(
                                                       fontSize: 18,
-                                                      color: Colors.blueAccent,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                      color: Colors.white,
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                            textColor: Colors.blueAccent,
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                    color: Colors.blueAccent,
-                                                    width: 1,
-                                                    style: BorderStyle.solid),
-                                                borderRadius:
-                                                    BorderRadius.circular(15)),
-                                          ),
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.6,
-                                            height: 56,
-                                            child: FlatButton(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              color: kPrimaryColor,
-                                              onPressed: () => {
-                                                imageCache.clear(),
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            CameraPage(
-                                                                null, false)))
-                                              },
-                                              child: Text(
-                                                "Continue",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white,
                                                 ),
-                                              ),
-                                            ),
-                                          )
+                                              ))
                                         ],
-                                      ),
-                                    ],
-                                  )
+                                      )
+                                    : Column(
+                                        children: <Widget>[
+                                          (_item != null &&
+                                                  _item.latex.isNotEmpty)
+                                              ? Column(
+                                                  children: [
+                                                    Divider(
+                                                      color: Colors.black,
+                                                      height: 1,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 15,
+                                                              vertical: 20),
+                                                      child: KaTeX(
+                                                        laTeXCode: Text(
+                                                            _item.latex,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyText2),
+                                                      ),
+                                                    ),
+                                                    Divider(
+                                                      color: Colors.black,
+                                                      height: 1,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 5,
+                                                              vertical: 15),
+                                                      child: Text(
+                                                        _item?.message ?? "",
+                                                        style: GoogleFonts.openSans(
+                                                            textStyle: TextStyle(
+                                                                color: Colors
+                                                                    .black54,
+                                                                fontSize: 16)),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              : Column(
+                                                  children: [
+                                                    Divider(
+                                                      color: Colors.black,
+                                                      height: 1,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 5,
+                                                              vertical: 10),
+                                                      child: Text(
+                                                        _item?.message ?? "",
+                                                        style: GoogleFonts.openSans(
+                                                            textStyle: TextStyle(
+                                                                color: Colors
+                                                                    .black54,
+                                                                fontSize: 16)),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Divider(
+                                                      color: Colors.black,
+                                                      height: 1,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 20,
+                                                              vertical: 10),
+                                                      child: Text(
+                                                        _item?.expression ?? "",
+                                                        style: GoogleFonts.openSans(
+                                                            textStyle: TextStyle(
+                                                                color: Colors
+                                                                    .black54,
+                                                                fontSize: 16)),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                          Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20, vertical: 20),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.8,
+                                                height: 56,
+                                                child: FlatButton(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  color: kPrimaryColor,
+                                                  onPressed: () => {
+                                                    imageCache.clear(),
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    CameraPage(
+                                                                        null,
+                                                                        false)))
+                                                  },
+                                                  child: Text(
+                                                    "Continue",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ))
+                                        ],
+                                      )
+                                : Center()
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
@@ -652,17 +594,17 @@ class _CameraPage extends State<CameraPage>
                                         'From Library',
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: Colors.green,
+                                          color: kPrimaryColor,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                textColor: Colors.green,
+                                textColor: kPrimaryColor,
                                 shape: RoundedRectangleBorder(
                                     side: BorderSide(
-                                        color: Colors.green,
+                                        color: kPrimaryColor,
                                         width: 1,
                                         style: BorderStyle.solid),
                                     borderRadius: BorderRadius.circular(15)),

@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:solvequation/ui/camera/camera.dart';
+import 'package:solvequation/ui/camera/result.dart';
 import 'package:solvequation/ui/home/detail_history.dart';
 import 'package:solvequation/ui/home/history_screen.dart';
-import 'package:solvequation/ui/home/home.dart';
-import 'package:solvequation/ui/home/login_gmail.dart';
-import 'package:solvequation/ui/home/splashscreen.dart';
+import 'package:solvequation/ui/home/home_screen.dart';
+import 'package:solvequation/ui/home/splash_screen.dart';
+import 'package:solvequation/ui/home/login_screen.dart';
 
 class Routes {
   static const String math = CameraPage.routeName;
@@ -13,6 +14,7 @@ class Routes {
   static const String login = LoginScreen.routeName;
   static const String history = HistoryScreen.routeName;
   static const String detail_history = DetailHistory.routeName;
+  static const String result = Result.routeName;
 
   static getRoutes(BuildContext context) {
     return {
@@ -22,6 +24,7 @@ class Routes {
       login: (context) => LoginScreen(),
       history: (context) => HistoryScreen(),
       detail_history: (context) => DetailHistory(null),
+      result: (context) => Result(null),
     };
   }
 }

@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+
 class Customer {
-  final String id;
+  final int id;
   final String email;
   final String phone;
   final String name;
@@ -23,14 +28,16 @@ class Customer {
       data['role'] as int,
       data['is_active'] as bool);
 
-  Map<String, dynamic> toJson() => {
-        'email': email,
-        'phone': phone,
-        'uid': uid,
-        'avatar_url': avatarUrl,
-        'password': password,
-        'name': name,
-        'role': role,
-        'is_active': isActive,
-      };
+  Map<String, dynamic> toJson() => {'uid': uid};
+}
+
+class CustomerData {
+  final Customer customer;
+  final int status;
+  CustomerData(this.customer, this.status);
+  factory CustomerData.fromResponse(http.Response response) {
+    var statusCode = response.statusCode;
+    Map<String, dynamic> jsonData = json.decode(response.body);
+    return CustomerData(Customer.fromJson(jsonData), statusCode);
+  }
 }
