@@ -38,6 +38,7 @@ class _LoginState extends State<LoginScreen> {
         );
 
         await FirebaseAuth.instance.signInWithCredential(credential);
+        _customerService.getUrl();
         Customer customer = new Customer(
             null, null, _auth.currentUser.uid, null, null, null, null, 1, true);
         _customerService.create(customer).then((value) => {
@@ -81,6 +82,7 @@ class _LoginState extends State<LoginScreen> {
           FacebookAuthProvider.credential(accessToken.token);
       var a = await _auth.signInWithCredential(credential);
       if (a.user != null) {
+        _customerService.getUrl();
         Customer customer = new Customer(
             null, null, a.user?.uid, null, null, null, null, 1, true);
         _customerService.create(customer).then((value) => {
@@ -104,7 +106,7 @@ class _LoginState extends State<LoginScreen> {
         ],
       );
 
-  Widget buildSignUp(BuildContext context) => 
+  Widget buildSignUp(BuildContext context) =>
       (!_isLoggedIn) ? LoginWidget(context) : HomeScreen();
 
   Widget loginGmail(BuildContext context) => Container(

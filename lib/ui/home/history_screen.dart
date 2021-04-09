@@ -10,7 +10,6 @@ import 'package:solvequation/data/history.dart';
 import 'package:solvequation/routes.dart';
 import 'package:solvequation/ui/home/detail_history.dart';
 import 'package:solvequation/ui/home/home_screen.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HistoryScreen extends StatefulWidget {
   static const String routeName = "/history";
@@ -99,108 +98,123 @@ class _HistoryState extends State<HistoryScreen> {
                           itemCount: _data.histories.length,
                           itemBuilder: (BuildContext context, int index) {
                             History _item = _data.histories[index];
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                                ),
-                                (_item.url != null)
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15),
-                                            topRight: Radius.circular(15),
-                                            bottomLeft: Radius.circular(0),
-                                            bottomRight: Radius.circular(0)),
-                                        child: Image.network('${_item.url}',
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.92,
-                                            height: 60,
-                                            fit: BoxFit.fill))
-                                    : AssetImage(
-                                        'assets/images/placeholder.png'),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(0),
-                                      topRight: Radius.circular(0),
-                                      bottomLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15)),
-                                  child:
-                                      //KaTeX(
-                                      //   laTeXCode: Text(_item.latex,
-                                      //       style: Theme.of(context)
-                                      //           .textTheme
-                                      //           .bodyText1),
-                                      // ),
-                                      (_item.latex == "")
-                                          ? ClipRRect(
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(0),
-                                                  topRight: Radius.circular(0),
-                                                  bottomLeft:
-                                                      Radius.circular(15),
-                                                  bottomRight:
-                                                      Radius.circular(15)),
-                                              child: Container(
+                            return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailHistory(_item.id)));
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10.0),
+                                    ),
+                                    (_item.url != null)
+                                        ? ClipRRect(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(15),
+                                                topRight: Radius.circular(15),
+                                                bottomLeft: Radius.circular(0),
+                                                bottomRight:
+                                                    Radius.circular(0)),
+                                            child: Image.network('${_item.url}',
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.92,
+                                                height: 60,
+                                                fit: BoxFit.fill))
+                                        : AssetImage(
+                                            'assets/images/placeholder.png'),
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(0),
+                                          topRight: Radius.circular(0),
+                                          bottomLeft: Radius.circular(15),
+                                          bottomRight: Radius.circular(15)),
+                                      child:
+                                          //KaTeX(
+                                          //   laTeXCode: Text(_item.latex,
+                                          //       style: Theme.of(context)
+                                          //           .textTheme
+                                          //           .bodyText1),
+                                          // ),
+                                          (_item.latex == "")
+                                              ? ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft: Radius
+                                                              .circular(0),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  0),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  15),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  15)),
+                                                  child: Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.92,
+                                                      height: 60.0,
+                                                      color: Colors.grey[350],
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
+                                                        child: Text(
+                                                          _item.message,
+                                                          style: new TextStyle(
+                                                              fontSize: 14.0,
+                                                              color: Colors
+                                                                  .black87),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      )),
+                                                )
+                                              : Container(
                                                   width: MediaQuery.of(context)
                                                           .size
                                                           .width *
                                                       0.92,
                                                   height: 60.0,
                                                   color: Colors.grey[350],
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10.0),
-                                                    child: Text(
-                                                      _item.message,
-                                                      style: new TextStyle(
-                                                          fontSize: 14.0,
-                                                          color:
-                                                              Colors.black87),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  )),
-                                            )
-                                          : Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.92,
-                                              height: 60.0,
-                                              color: Colors.grey[350],
-                                              child: TeXView(
-                                                renderingEngine:
-                                                    const TeXViewRenderingEngine
-                                                        .katex(),
-                                                child: TeXViewDocument(
-                                                    _item.latex,
+                                                  child: TeXView(
+                                                    renderingEngine:
+                                                        const TeXViewRenderingEngine
+                                                            .katex(),
+                                                    child: TeXViewDocument(
+                                                        _item.latex,
+                                                        style: TeXViewStyle(
+                                                            textAlign:
+                                                                TeXViewTextAlign
+                                                                    .Center)),
                                                     style: TeXViewStyle(
-                                                        textAlign:
-                                                            TeXViewTextAlign
-                                                                .Center)),
-                                                style: TeXViewStyle(
-                                                  elevation: 10,
-                                                  backgroundColor:
-                                                      Colors.grey[350],
+                                                      elevation: 10,
+                                                      backgroundColor:
+                                                          Colors.grey[350],
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                ),
-                                Text(
-                                  _item.dateTime,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.openSans(
-                                      textStyle: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600)),
-                                ),
-                              ],
-                            );
+                                    ),
+                                    Text(
+                                      _item.dateTime,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.openSans(
+                                          textStyle: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600)),
+                                    ),
+                                  ],
+                                ));
                           }))
                   : Padding(
                       padding: const EdgeInsets.all(10.0),

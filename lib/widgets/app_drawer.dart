@@ -20,9 +20,26 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   final user = FirebaseAuth.instance.currentUser;
-  bool auto = false;
+  bool auto ;
   FirebaseAuth _auth = FirebaseAuth.instance;
   FacebookLogin facebookLogin = FacebookLogin();
+  @override
+  void initState() {
+    super.initState();
+    final storage = new FlutterSecureStorage();
+    storage.read(key: "auto").then((value) {
+      if (value == "true") {
+        setState(() {
+          auto = true;
+        });
+      } else {
+        setState(() {
+          auto = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -155,15 +172,33 @@ class _AppDrawerState extends State<AppDrawer> {
                         SizedBox(
                           width: 50,
                         ),
-                        CustomSwitch(
-                          activeColor: kPrimaryColor,
-                          value: auto,
-                          onChanged: (value) {
-                            final storage = new FlutterSecureStorage();
-                            storage.delete(key: "auto");
-                            storage.write(key: "auto", value: value.toString());
-                          },
-                        ),
+                        (auto)
+                            ? CustomSwitch(
+                                activeColor: kPrimaryColor,
+                                value: true,
+                                onChanged: (value) {
+                                  final storage = new FlutterSecureStorage();
+                                  setState(() {
+                                    auto = value;
+                                  });
+                                  storage.delete(key: "auto");
+                                  storage.write(
+                                      key: "auto", value: value.toString());
+                                },
+                              )
+                            : CustomSwitch(
+                                activeColor: kPrimaryColor,
+                                value: false,
+                                onChanged: (value) {
+                                  final storage = new FlutterSecureStorage();
+                                  setState(() {
+                                    auto = value;
+                                  });
+                                  storage.delete(key: "auto");
+                                  storage.write(
+                                      key: "auto", value: value.toString());
+                                },
+                              ),
                       ],
                     )),
               ]),

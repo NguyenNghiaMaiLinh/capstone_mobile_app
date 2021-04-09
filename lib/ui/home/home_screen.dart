@@ -19,7 +19,6 @@ class HomeState extends State<HomeScreen> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _customerService.getUrl();
     return Scaffold(
         appBar: new AppBar(backgroundColor: kPrimaryColor, actions: <Widget>[
           Container(
