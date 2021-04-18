@@ -5,7 +5,7 @@ import 'package:solvequation/ui/home/splash_screen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(); 
   runApp(MyApp());
 }
 

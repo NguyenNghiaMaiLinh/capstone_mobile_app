@@ -316,11 +316,20 @@ class _CameraPage extends State<CameraPage>
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(
                                                 20, 8, 20, 8),
-                                            child: KaTeX(
-                                              laTeXCode: Text(_item.latex,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2),
+                                            child: TeXView(
+                                              renderingEngine:
+                                                  const TeXViewRenderingEngine
+                                                      .katex(),
+                                              child: TeXViewDocument(
+                                                  _item.latex,
+                                                  style: TeXViewStyle(
+                                                      textAlign:
+                                                          TeXViewTextAlign
+                                                              .Center)),
+                                              style: TeXViewStyle(
+                                                elevation: 10,
+                                                backgroundColor: Colors.white,
+                                              ),
                                             ),
                                           ),
                                           Divider(
@@ -425,13 +434,21 @@ class _CameraPage extends State<CameraPage>
                                                           EdgeInsets.symmetric(
                                                               horizontal: 15,
                                                               vertical: 20),
-                                                      child: KaTeX(
-                                                        laTeXCode: Text(
+                                                      child: TeXView(
+                                                        renderingEngine:
+                                                            const TeXViewRenderingEngine
+                                                                .katex(),
+                                                        child: TeXViewDocument(
                                                             _item.latex,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText2),
+                                                            style: TeXViewStyle(
+                                                                textAlign:
+                                                                    TeXViewTextAlign
+                                                                        .Center)),
+                                                        style: TeXViewStyle(
+                                                          elevation: 10,
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                     Divider(
@@ -648,32 +665,32 @@ class _CameraPage extends State<CameraPage>
   }
 
   Widget _buildCroppingImage(File _sample) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Crop.file(_sample, key: cropKey),
-        ),
-        Container(
-          padding: const EdgeInsets.only(top: 20.0),
-          alignment: AlignmentDirectional.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return  Column(
             children: <Widget>[
-              FlatButton(
-                child: Text(
-                  'Crop Image',
-                  style: Theme.of(context)
-                      .textTheme
-                      .button
-                      .copyWith(color: Colors.white),
-                ),
-                onPressed: () => _cropImage(_sample),
+              Expanded(
+                child: Crop.file(_sample, key: cropKey),
               ),
+              Container(
+                padding: const EdgeInsets.only(top: 20.0),
+                alignment: AlignmentDirectional.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text(
+                        'Detect',
+                        style: Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(color: Colors.white),
+                      ),
+                      onPressed: () => _cropImage(_sample),
+                    ),
+                  ],
+                ),
+              )
             ],
-          ),
-        )
-      ],
-    );
+          );
   }
 
   Future<void> _cropImage(File _sample) async {
@@ -683,7 +700,9 @@ class _CameraPage extends State<CameraPage>
       // cannot crop, widget is not setup
       return;
     }
-
+    if (_sample == null) {
+      return;
+    }
     // scale up to use maximum possible number of pixels
     // this will sample image in higher resolution to make cropped image larger
     final sample = await ImageCrop.sampleImage(
@@ -696,10 +715,9 @@ class _CameraPage extends State<CameraPage>
       area: area,
     );
 
-    sample.delete();
+    sample?.delete();
 
     _lastCropped?.delete();
-    _lastCropped = file;
     setState(() {
       _selectedFile = file;
       edit = false;

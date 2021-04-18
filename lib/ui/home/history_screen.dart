@@ -124,8 +124,7 @@ class _HistoryState extends State<HistoryScreen> {
                                                         .size
                                                         .width *
                                                     0.92,
-                                                height: 60,
-                                                fit: BoxFit.fill))
+                                                fit: BoxFit.fitHeight))
                                         : AssetImage(
                                             'assets/images/placeholder.png'),
                                     ClipRRect(
