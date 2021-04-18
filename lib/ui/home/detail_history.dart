@@ -313,9 +313,9 @@ class _DetailHistory extends State<DetailHistory> {
                   )
                 : Container(
                     color: Colors.white,
-                    alignment: Alignment.center,
-                    height: 160.0,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         spinkit,
                       ],

@@ -42,7 +42,6 @@ class _LoginState extends State<LoginScreen> {
       final user = await _googleSignIn.signIn();
       if (user == null) {
         _isLoggedIn = false;
-        _loading = false;
         return;
       } else {
         final googleAuth = await user.authentication;
@@ -115,24 +114,13 @@ class _LoginState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: (_loading == false)
-          ? Stack(
-              fit: StackFit.expand,
-              children: [
-                CustomPaint(painter: BackgroundPainter()),
-                buildSignUp(context),
-              ],
-            )
-          : Container(
-              color: Colors.white,
-              alignment: Alignment.center,
-              height: 160.0,
-              child: Column(
-                children: <Widget>[
-                  spinkit,
-                ],
-              ),
-            ));
+          body: Stack(
+        fit: StackFit.expand,
+        children: [
+          CustomPaint(painter: BackgroundPainter()),
+          buildSignUp(context),
+        ],
+      ));
 
   Widget buildSignUp(BuildContext context) =>
       (!_isLoggedIn) ? LoginWidget(context) : HomeScreen();
@@ -159,6 +147,7 @@ class _LoginState extends State<LoginScreen> {
           },
         ),
       );
+  
   Widget loginFacebook(BuildContext context) => Container(
         padding: EdgeInsets.all(4),
         width: MediaQuery.of(context).size.width * 0.8,
@@ -186,31 +175,42 @@ class _LoginState extends State<LoginScreen> {
           },
         ),
       );
-
-  Widget LoginWidget(BuildContext context) => Column(
-        children: [
-          Spacer(),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              width: 250,
-              child: Text(
-                'Welcome Back To Solve Equation App',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+  
+  Widget LoginWidget(BuildContext context) => (_loading)
+      ? Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              spinkit,
+            ],
+          ),
+        )
+      : Column(
+          children: [
+            Spacer(),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                width: 250,
+                child: Text(
+                  'Welcome Back To Solve Equation App',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          Spacer(),
-          loginGmail(context),
-          loginFacebook(context),
-          Spacer(),
-        ],
-      );
+            Spacer(),
+            loginGmail(context),
+            loginFacebook(context),
+            Spacer(),
+          ],
+        );
   final spinkit = SpinKitFadingCircle(
     itemBuilder: (BuildContext context, int index) {
       return DecoratedBox(
