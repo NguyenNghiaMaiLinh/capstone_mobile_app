@@ -18,17 +18,17 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   final user = FirebaseAuth.instance.currentUser;
-  bool auto ;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  FacebookLogin facebookLogin = FacebookLogin();
+  bool auto;
   @override
   void initState() {
     super.initState();
     final storage = new FlutterSecureStorage();
     storage.read(key: "auto").then((value) {
       if (value == "true") {
+        if (user == null) {
+          Navigator.pushReplacementNamed(context, Routes.login);
+        }
         setState(() {
           auto = true;
         });
@@ -48,12 +48,16 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  _logout() {
-    _googleSignIn.signOut();
-    if (facebookLogin.isLoggedIn != null) {
+  _logout() async {
+    await FirebaseAuth.instance.signOut();
+    final facebookLogin = FacebookLogin();
+    final GoogleSignIn googleSignIn = new GoogleSignIn();
+    googleSignIn.isSignedIn().then((s) {
+      googleSignIn.signOut();
+    });
+    facebookLogin.isLoggedIn.then((b) {
       facebookLogin.logOut();
-    }
-    _auth.signOut();
+    });
   }
 
   Drawer buildDrawer(BuildContext context) {
@@ -104,7 +108,8 @@ class _AppDrawerState extends State<AppDrawer> {
                   width: 80,
                   height: 70,
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(user.photoURL) ??
+                    backgroundImage: NetworkImage(user?.photoURL ??
+                            'https://www.edmundsgovtech.com/wp-content/uploads/2020/01/default-picture_0_0.png') ??
                         AssetImage('assets/images/placeholder.png'),
                   ),
                 ),
@@ -112,7 +117,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   height: 20,
                 ),
                 Text(
-                  user.displayName ?? "User",
+                  user?.displayName ?? "User",
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -147,7 +152,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           color: Colors.black54,
                         )),
                     Text(
-                      user.email ?? "...",
+                      user?.email ?? "...",
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

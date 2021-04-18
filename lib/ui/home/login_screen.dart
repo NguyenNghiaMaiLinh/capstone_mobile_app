@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:solvequation/blocs/customer_service.dart';
+import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/data/customer.dart';
 import 'package:solvequation/ui/home/home_screen.dart';
 import 'package:solvequation/widgets/background_painter.dart';
@@ -18,17 +20,29 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginState extends State<LoginScreen> {
   bool _isLoggedIn = false;
+  bool _loading = false;
   Map userProfile;
   final facebookLogin = FacebookLogin();
   CustomerService _customerService = new CustomerService();
   FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  @override
+  void initState() {
+    super.initState();
+    if (_auth.currentUser != null) {
+      setState(() {
+        _isLoggedIn = true;
+        _loading = false;
+      });
+    }
+  }
 
   _loginWithGmail() async {
     try {
       final user = await _googleSignIn.signIn();
       if (user == null) {
         _isLoggedIn = false;
+        _loading = false;
         return;
       } else {
         final googleAuth = await user.authentication;
@@ -46,6 +60,7 @@ class _LoginState extends State<LoginScreen> {
                 {
                   setState(() {
                     _isLoggedIn = true;
+                    _loading = false;
                   })
                 }
             });
@@ -90,6 +105,7 @@ class _LoginState extends State<LoginScreen> {
                 {
                   setState(() {
                     _isLoggedIn = true;
+                    _loading = false;
                   })
                 }
             });
@@ -98,13 +114,25 @@ class _LoginState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        fit: StackFit.expand,
-        children: [
-          CustomPaint(painter: BackgroundPainter()),
-          buildSignUp(context),
-        ],
-      );
+  Widget build(BuildContext context) => Scaffold(
+      body: (_loading == false)
+          ? Stack(
+              fit: StackFit.expand,
+              children: [
+                CustomPaint(painter: BackgroundPainter()),
+                buildSignUp(context),
+              ],
+            )
+          : Container(
+              color: Colors.white,
+              alignment: Alignment.center,
+              height: 160.0,
+              child: Column(
+                children: <Widget>[
+                  spinkit,
+                ],
+              ),
+            ));
 
   Widget buildSignUp(BuildContext context) =>
       (!_isLoggedIn) ? LoginWidget(context) : HomeScreen();
@@ -119,11 +147,14 @@ class _LoginState extends State<LoginScreen> {
           ),
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          highlightedBorderColor: Colors.white,
-          borderSide: BorderSide(color: Colors.white),
-          textColor: Colors.white,
+          highlightedBorderColor: Colors.black87,
+          borderSide: BorderSide(color: Colors.black87),
+          textColor: Colors.black87,
           icon: FaIcon(FontAwesomeIcons.facebook, color: Colors.blue),
           onPressed: () async {
+            setState(() {
+              _loading = true;
+            });
             handleLogin();
           },
         ),
@@ -138,12 +169,16 @@ class _LoginState extends State<LoginScreen> {
           ),
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          highlightedBorderColor: Colors.white,
-          borderSide: BorderSide(color: Colors.white),
-          textColor: Colors.white,
+          highlightedBorderColor: Colors.black87,
+          borderSide: BorderSide(color: Colors.black87),
+          textColor: Colors.black87,
           icon: FaIcon(FontAwesomeIcons.google, color: Colors.red),
           onPressed: () {
+            setState(() {
+              _loading = true;
+            });
             _loginWithGmail();
+
             // final provider =
             //     Provider.of<GoogleSignInProvider>(context, listen: false);
             // provider.login();
@@ -176,4 +211,13 @@ class _LoginState extends State<LoginScreen> {
           Spacer(),
         ],
       );
+  final spinkit = SpinKitFadingCircle(
+    itemBuilder: (BuildContext context, int index) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: index.isEven ? kPrimaryColor : kPrimaryColor,
+        ),
+      );
+    },
+  );
 }
