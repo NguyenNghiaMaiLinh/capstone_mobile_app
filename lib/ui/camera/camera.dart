@@ -1,14 +1,11 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_crop/image_crop.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:katex_flutter/katex_flutter.dart';
 import 'package:solvequation/blocs/image_service.dart';
 import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/data/root.dart';
-import 'package:solvequation/ui/camera/result.dart';
 import 'package:solvequation/ui/home/home_screen.dart';
 import 'package:solvequation/data/result.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

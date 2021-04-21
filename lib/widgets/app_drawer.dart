@@ -24,11 +24,11 @@ class _AppDrawerState extends State<AppDrawer> {
   void initState() {
     super.initState();
     final storage = new FlutterSecureStorage();
+    if (user == null) {
+      Navigator.pushReplacementNamed(context, Routes.login);
+    }
     storage.read(key: "auto").then((value) {
       if (value == "true") {
-        if (user == null) {
-          Navigator.pushReplacementNamed(context, Routes.login);
-        }
         setState(() {
           auto = true;
         });
@@ -61,6 +61,7 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Drawer buildDrawer(BuildContext context) {
+    final storage = new FlutterSecureStorage();
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -182,11 +183,9 @@ class _AppDrawerState extends State<AppDrawer> {
                                 activeColor: kPrimaryColor,
                                 value: true,
                                 onChanged: (value) {
-                                  final storage = new FlutterSecureStorage();
                                   setState(() {
                                     auto = value;
                                   });
-                                  storage.delete(key: "auto");
                                   storage.write(
                                       key: "auto", value: value.toString());
                                 },
@@ -195,11 +194,9 @@ class _AppDrawerState extends State<AppDrawer> {
                                 activeColor: kPrimaryColor,
                                 value: false,
                                 onChanged: (value) {
-                                  final storage = new FlutterSecureStorage();
                                   setState(() {
                                     auto = value;
                                   });
-                                  storage.delete(key: "auto");
                                   storage.write(
                                       key: "auto", value: value.toString());
                                 },
@@ -218,7 +215,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   color: kPrimaryColor,
                   height: 50,
                   onPressed: () async {
-                    _logout();
+                    await _logout();
                     Navigator.pushReplacementNamed(context, Routes.login);
                     // context.read<AuthenticationService>().signOut();
                   },

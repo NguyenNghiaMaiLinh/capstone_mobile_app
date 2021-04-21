@@ -29,10 +29,9 @@ class _LoginState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    if (_auth.currentUser != null) {
+    if (_auth?.currentUser != null) {
       setState(() {
         _isLoggedIn = true;
-        _loading = false;
       });
     }
   }
@@ -49,9 +48,8 @@ class _LoginState extends State<LoginScreen> {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-
         await FirebaseAuth.instance.signInWithCredential(credential);
-        _customerService.getUrl();
+        await _customerService.getUrl();
         Customer customer = new Customer(
             null, null, _auth.currentUser.uid, null, null, null, null, 1, true);
         _customerService.create(customer).then((value) => {
@@ -96,7 +94,7 @@ class _LoginState extends State<LoginScreen> {
           FacebookAuthProvider.credential(accessToken.token);
       var a = await _auth.signInWithCredential(credential);
       if (a.user != null) {
-        _customerService.getUrl();
+       await _customerService.getUrl();
         Customer customer = new Customer(
             null, null, a.user?.uid, null, null, null, null, 1, true);
         _customerService.create(customer).then((value) => {
@@ -147,7 +145,7 @@ class _LoginState extends State<LoginScreen> {
           },
         ),
       );
-  
+
   Widget loginFacebook(BuildContext context) => Container(
         padding: EdgeInsets.all(4),
         width: MediaQuery.of(context).size.width * 0.8,
@@ -175,7 +173,7 @@ class _LoginState extends State<LoginScreen> {
           },
         ),
       );
-  
+
   Widget LoginWidget(BuildContext context) => (_loading)
       ? Container(
           color: Colors.white,

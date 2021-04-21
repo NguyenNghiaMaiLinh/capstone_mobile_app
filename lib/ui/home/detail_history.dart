@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:katex_flutter/katex_flutter.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:solvequation/blocs/image_service.dart';
 import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/data/history.dart';

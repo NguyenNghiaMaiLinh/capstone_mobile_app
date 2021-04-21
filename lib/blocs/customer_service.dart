@@ -20,9 +20,7 @@ class CustomerService {
     if (response.statusCode == 201) {
       var dataReponse = jsonDecode(response.body);
       var data = Customer.fromJson(dataReponse['user']);
-      // Delete value
-      storage.delete(key: "id");
-      storage.delete(key: "token");
+      storage.write(key: "auto", value: "true");
       // Write value
       storage.write(key: "id", value: data.id.toString());
       storage.write(key: "token", value: dataReponse['token']);
@@ -30,9 +28,7 @@ class CustomerService {
     } else {
       var dataReponse = jsonDecode(response.body);
       var data = Customer.fromJson(dataReponse['user']);
-      // Delete value
-      storage.delete(key: "id");
-      storage.delete(key: "token");
+      storage.write(key: "auto", value: "true");
       // Write value
       storage.write(key: "id", value: data.id.toString());
       storage.write(key: "token", value: dataReponse['token']);
@@ -69,18 +65,11 @@ class CustomerService {
   // }
 
   Future getUrl() async {
-    http
-        .get(
-            "http://url-env.eba-rvk73mrv.ap-southeast-1.elasticbeanstalk.com/api/url/1")
-        .then((result) {
-      String url = json.decode(result.body)['url'];
-      final storage = new FlutterSecureStorage();
-      // Delete value
-      storage.delete(key: "url");
-      // Write value
-      storage.write(key: "url", value: url);
-      print(url);
-    });
+    var result = await http.get(
+        "http://url-env.eba-rvk73mrv.ap-southeast-1.elasticbeanstalk.com/api/url/1");
+    String url = json.decode(result.body)['url'];
+    final storage = new FlutterSecureStorage();
+    storage.write(key: "url", value: url);
     // Create storage
   }
 }
