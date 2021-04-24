@@ -138,4 +138,24 @@ class ImageService {
     });
     return result;
   }
+  Future<History> deleteImage(int id) async {
+    final storage = new FlutterSecureStorage();
+    History result;
+    String url = await storage.read(key: "url");
+    String id_user = await storage.read(key: "id");
+    String token = await storage.read(key: "token");
+    String path = "$url/users/$id_user/images/$id";
+    await http.delete(path, headers: {
+      'Authorization': '$token',
+    }).then((response) {
+      if (response.statusCode == 200) {
+        if (response.body != null) {
+          result = History.fromJson(json.decode(response.body));
+        }
+      } else {
+        return result;
+      }
+    });
+    return result;
+  }
 }

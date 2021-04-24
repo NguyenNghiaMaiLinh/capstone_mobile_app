@@ -69,7 +69,7 @@ class CustomerService {
         "http://url-env.eba-rvk73mrv.ap-southeast-1.elasticbeanstalk.com/api/url/1");
     String url = json.decode(result.body)['url'];
     final storage = new FlutterSecureStorage();
-    storage.write(key: "url", value: url);
+    await storage.write(key: "url", value: url);
     // Create storage
   }
 }

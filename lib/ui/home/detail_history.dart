@@ -20,16 +20,18 @@ class DetailHistory extends StatefulWidget {
 class _DetailHistory extends State<DetailHistory> {
   History _item;
   bool _isLoading = true;
+  int _id = 0;
   ImageService _imageService = new ImageService();
 
   @override
   void initState() {
-    int _id = widget.id;
+    _id = widget.id;
     _imageService.getHistoryDetail(_id).then((value) {
       if (value != null) {
         setState(() {
           _isLoading = false;
           _item = value;
+          _id = widget.id;
         });
       }
     });
@@ -281,7 +283,7 @@ class _DetailHistory extends State<DetailHistory> {
                                 ),
                           Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 50, vertical: 5),
+                                  horizontal: 20, vertical: 5),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 56,
@@ -304,7 +306,43 @@ class _DetailHistory extends State<DetailHistory> {
                                     ),
                                   ),
                                 ),
-                              ))
+                              )),
+                          FlatButton(
+                            onPressed: () {
+                              _imageService
+                                  .deleteImage(_id)
+                                  .then((value) => _showMyDialog());
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              height: 50,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  // Icon(
+                                  //   Icons.photo_library,
+                                  //   color: Colors.green,
+                                  // ),
+                                  // SizedBox(width: 6),
+                                  Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            textColor: kPrimaryColor,
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Colors.red,
+                                    width: 1,
+                                    style: BorderStyle.solid),
+                                borderRadius: BorderRadius.circular(15)),
+                          ),
                         ],
                       )
                     ],
@@ -319,6 +357,61 @@ class _DetailHistory extends State<DetailHistory> {
                       ],
                     ),
                   )));
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Delete image',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure to delete?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Delete',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => HistoryScreen()));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   final spinkit = SpinKitFadingCircle(
