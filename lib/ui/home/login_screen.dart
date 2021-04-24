@@ -123,7 +123,7 @@ class _LoginState extends State<LoginScreen> {
   Widget buildSignUp(BuildContext context) =>
       (!_isLoggedIn) ? LoginWidget(context) : HomeScreen();
 
-  Widget loginGmail(BuildContext context) => Container(
+  Widget loginFacebook(BuildContext context) => Container(
         padding: EdgeInsets.all(4),
         width: MediaQuery.of(context).size.width * 0.8,
         child: OutlineButton.icon(
@@ -146,7 +146,7 @@ class _LoginState extends State<LoginScreen> {
         ),
       );
 
-  Widget loginFacebook(BuildContext context) => Container(
+  Widget loginGoogle(BuildContext context) => Container(
         padding: EdgeInsets.all(4),
         width: MediaQuery.of(context).size.width * 0.8,
         child: OutlineButton.icon(
@@ -204,7 +204,7 @@ class _LoginState extends State<LoginScreen> {
               ),
             ),
             Spacer(),
-            loginGmail(context),
+            loginGoogle(context),
             loginFacebook(context),
             Spacer(),
           ],
