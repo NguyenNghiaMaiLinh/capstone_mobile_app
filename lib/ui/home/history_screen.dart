@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_tex/flutter_tex.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:solvequation/blocs/image_service.dart';
@@ -38,7 +39,19 @@ class _HistoryState extends State<HistoryScreen> {
           _idLoading = false;
         });
       }
-    });
+    }).catchError((onError) => {
+          if (onError != null)
+            {
+              Fluttertoast.showToast(
+                  msg: onError,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1),
+              setState(() {
+                _idLoading = false;
+              })
+            }
+        });
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -91,8 +104,18 @@ class _HistoryState extends State<HistoryScreen> {
       body: Column(
         children: <Widget>[
           (!_idLoading)
-              ? (_data?.histories?.length > 0)
-                  ? Expanded(
+              ? (_data == null)
+                  ? Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        'No record found',
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                            color: Colors.black54),
+                        textAlign: TextAlign.center,
+                      ),
+                    ):Expanded(
                       child: ListView.builder(
                           controller: _scrollController,
                           itemCount: _data.histories.length,
@@ -215,17 +238,7 @@ class _HistoryState extends State<HistoryScreen> {
                                   ],
                                 ));
                           }))
-                  : Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'No record found',
-                        style: new TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                            color: Colors.black54),
-                        textAlign: TextAlign.center,
-                      ),
-                    )
+                  
               : Expanded(
                   child: Shimmer.fromColors(
                     baseColor: Colors.grey[300],

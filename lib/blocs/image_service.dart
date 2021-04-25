@@ -20,65 +20,78 @@ class ImageService {
     String token = await storage.read(key: "token");
     String auto = await storage.read(key: "auto");
     var uri = Uri.parse('$url/users/$id/images');
-    var request = new http.MultipartRequest("POST", uri);
+    try {
+      var request = new http.MultipartRequest("POST", uri);
 
-    var multipartFile = new http.MultipartFile('file', stream, length,
-        filename: basename(imageFile.path));
-    if (auto == "true") {
-      Map<String, String> requestBody = <String, String>{'save': '1'};
-      request.fields.addAll(requestBody);
-    }
-    request.files.add(multipartFile);
-    final Map<String, String> headers = {'Authorization': '$token'};
-    request.headers.addAll(headers);
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    if (response.statusCode == 200) {
-      final body = json.decode(response.body);
-      String expression = body['expression'] ?? "";
-      bool success = body['success'];
-      String message = body['message'] ?? "";
-      String latex = body['latex'] ?? "";
-      int id = body['id'];
-      int user = body['user'];
-      String url = body['url'] ?? "";
-      String datetime;
-      if (body['date_time'] != null) {
-        final dateTime = DateTime.parse(body['date_time']);
-        final format = DateFormat('dd-MM-yyyy HH:mm');
-        datetime = format.format(dateTime);
+      var multipartFile = new http.MultipartFile('file', stream, length,
+          filename: basename(imageFile.path));
+      if (auto == "true") {
+        Map<String, String> requestBody = <String, String>{'save': '1'};
+        request.fields.addAll(requestBody);
       }
-      List<dynamic> rootsJson = jsonDecode(response.body)['roots'];
-      List<String> roots =
-          rootsJson != null ? rootsJson.map((e) => e.toString()).toList() : [];
-      ResultItem result = new ResultItem(success, message, latex, expression,
-          roots, id, url, user, datetime, response.statusCode);
-      return result;
-    } else if (response.statusCode == 201) {
-      final body = json.decode(response.body);
-      String expression = body['expression'] ?? "";
-      bool success = body['success'];
-      String message = body['message'] ?? "";
-      String latex = body['latex'] ?? "";
-      int id = body['id'];
-      int user = body['user'];
-      String url = body['url'] ?? "";
-      String datetime;
-      if (body['date_time'] != null) {
-        final dateTime = DateTime.parse(body['date_time']);
-        final format = DateFormat('dd-MM-yyyy HH:mm');
-        datetime = format.format(dateTime);
-      }
+      request.files.add(multipartFile);
+      final Map<String, String> headers = {'Authorization': '$token'};
+      request.headers.addAll(headers);
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        String expression = body['expression'] ?? "";
+        bool success = body['success'];
+        String message = body['message'] ?? "";
+        String latex = body['latex'] ?? "";
+        int id = body['id'];
+        int user = body['user'];
+        String url = body['url'] ?? "";
+        String datetime;
+        if (body['date_time'] != null) {
+          final dateTime = DateTime.parse(body['date_time']);
+          final format = DateFormat('dd-MM-yyyy HH:mm');
+          datetime = format.format(dateTime);
+        }
+        List<dynamic> rootsJson = jsonDecode(response.body)['roots'];
+        List<String> roots = rootsJson != null
+            ? rootsJson.map((e) => e.toString()).toList()
+            : [];
+        ResultItem result = new ResultItem(success, message, latex, expression,
+            roots, id, url, user, datetime, response.statusCode);
+        return result;
+      } else if (response.statusCode == 201) {
+        final body = json.decode(response.body);
+        String expression = body['expression'] ?? "";
+        bool success = body['success'];
+        String message = body['message'] ?? "";
+        String latex = body['latex'] ?? "";
+        int id = body['id'];
+        int user = body['user'];
+        String url = body['url'] ?? "";
+        String datetime;
+        if (body['date_time'] != null) {
+          final dateTime = DateTime.parse(body['date_time']);
+          final format = DateFormat('dd-MM-yyyy HH:mm');
+          datetime = format.format(dateTime);
+        }
 
-      List<dynamic> rootsJson = jsonDecode(response.body)['roots'];
-      List<String> roots =
-          rootsJson != null ? rootsJson.map((e) => e.toString()).toList() : [];
-      ResultItem result = new ResultItem(success, message, latex, expression,
-          roots, id, url, user, datetime, response.statusCode);
-      return result;
-    } else {
-      ResultItem result = new ResultItem(
-          true, "", "", "", null, 0, "", 0, "", response.statusCode);
+        List<dynamic> rootsJson = jsonDecode(response.body)['roots'];
+        List<String> roots = rootsJson != null
+            ? rootsJson.map((e) => e.toString()).toList()
+            : [];
+        ResultItem result = new ResultItem(success, message, latex, expression,
+            roots, id, url, user, datetime, response.statusCode);
+        return result;
+      } else {
+        ResultItem result = new ResultItem(
+            true, "", "", "", null, 0, "", 0, "", response.statusCode);
+      }
+    } on SocketException {
+      print('No Internet connection ');
+      throw ("Internal server error!");
+    } on HttpException {
+      print("Couldn't find the post ");
+      throw ("Internal server error!");
+    } on FormatException {
+      print("Bad response format ");
+      throw ("Internal server error!");
     }
   }
 
@@ -90,13 +103,24 @@ class ImageService {
     String url = await storage.read(key: "url");
     String id = await storage.read(key: "id");
     String token = await storage.read(key: "token");
-    await http
-        .get('$url/users/$id/images?offset=$offset&limit=$limit', headers: {
-      'Authorization': '$token',
-    }).then((response) {
-      result = new HistoryData.fromResponse(response);
-    });
-    return result;
+    try {
+      await http
+          .get('$url/users/$id/images?offset=$offset&limit=$limit', headers: {
+        'Authorization': '$token',
+      }).then((response) {
+        result = new HistoryData.fromResponse(response);
+      });
+      return result;
+    } on SocketException {
+      print('No Internet connection ');
+      throw ("Internal server error!");
+    } on HttpException {
+      print("Couldn't find the post ");
+      throw ("Internal server error!");
+    } on FormatException {
+      print("Bad response format ");
+      throw ("Internal server error!");
+    }
   }
 
   // Future<List<History>> getHistory(int id) async {
@@ -138,6 +162,7 @@ class ImageService {
     });
     return result;
   }
+
   Future<History> deleteImage(int id) async {
     final storage = new FlutterSecureStorage();
     History result;

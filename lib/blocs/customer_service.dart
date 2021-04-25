@@ -15,31 +15,41 @@ class CustomerService {
       url = await storage.read(key: "url");
     }
     var body = customer.toJson();
-    var response = await http.post(
-      '$url/users',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 201) {
-      var dataReponse = jsonDecode(response.body);
-      var data = Customer.fromJson(dataReponse['user']);
-      await storage.write(key: "auto", value: "true");
-      // Write value
-      await storage.write(key: "id", value: data.id.toString());
-      await storage.write(key: "token", value: dataReponse['token']);
-      return data;
-    }
-    if (response.statusCode == 200) {
-      var dataReponse = jsonDecode(response.body);
-      var data = Customer.fromJson(dataReponse['user']);
-      await storage.write(key: "auto", value: "true");
-      // Write value
-      await storage.write(key: "id", value: data.id.toString());
-      await storage.write(key: "token", value: dataReponse['token']);
-      return data;
+    try {
+      var response = await http.post(
+        '$url/users',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(body),
+      );
+      if (response.statusCode == 201) {
+        var dataReponse = jsonDecode(response.body);
+        var data = Customer.fromJson(dataReponse['user']);
+        await storage.write(key: "auto", value: "true");
+        // Write value
+        await storage.write(key: "id", value: data.id.toString());
+        await storage.write(key: "token", value: dataReponse['token']);
+        return data;
+      }
+      if (response.statusCode == 200) {
+        var dataReponse = jsonDecode(response.body);
+        var data = Customer.fromJson(dataReponse['user']);
+        await storage.write(key: "auto", value: "true");
+        // Write value
+        await storage.write(key: "id", value: data.id.toString());
+        await storage.write(key: "token", value: dataReponse['token']);
+        return data;
+      }
+    } on SocketException {
+      print('No Internet connection ');
+      throw ("Internal server error!");
+    } on HttpException {
+      print("Couldn't find the post ");
+      throw ("Internal server error!");
+    } on FormatException {
+      print("Bad response format ");
+      throw ("Internal server error!");
     }
   }
   //   Future create(Customer customer) async {

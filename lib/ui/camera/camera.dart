@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_crop/image_crop.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +12,7 @@ import 'package:solvequation/data/result.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:animated_button/animated_button.dart';
 import 'package:flutter_tex/flutter_tex.dart';
+import 'package:solvequation/ui/home/login_screen.dart';
 
 class CameraPage extends StatefulWidget {
   final String selectedFile;
@@ -67,6 +69,10 @@ class _CameraPage extends State<CameraPage>
         });
         _imageService.Upload(_selectedFile).then((result) {
           if (result != null) {
+            if (result.status == 401) {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+            }
             setState(() {
               _output = true;
               _item = result;
@@ -76,7 +82,19 @@ class _CameraPage extends State<CameraPage>
               _isCrop = false;
             });
           }
-        });
+        }).catchError((onError) => {
+              if (onError != null)
+                {
+                  Fluttertoast.showToast(
+                      msg: onError,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1),
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          CameraPage(_selectedFile.path, false)))
+                }
+            });
       }
       return Padding(
           padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
@@ -272,6 +290,12 @@ class _CameraPage extends State<CameraPage>
                                         _imageService.Upload(_selectedFile)
                                             .then((result) {
                                           if (result != null) {
+                                            if (result.status == 401) {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          LoginScreen()));
+                                            }
                                             setState(() {
                                               _output = true;
                                               _isSuccess = result.success;
@@ -280,7 +304,26 @@ class _CameraPage extends State<CameraPage>
                                               _inProcess = false;
                                             });
                                           }
-                                        });
+                                        }).catchError((onError) => {
+                                                  if (onError != null)
+                                                    {
+                                                      Fluttertoast.showToast(
+                                                          msg: onError,
+                                                          toastLength: Toast
+                                                              .LENGTH_SHORT,
+                                                          gravity: ToastGravity
+                                                              .BOTTOM,
+                                                          timeInSecForIosWeb:
+                                                              1),
+                                                      Navigator.of(context).push(
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  CameraPage(
+                                                                      _selectedFile
+                                                                          .path,
+                                                                      false)))
+                                                    }
+                                                });
                                       },
                                       width: MediaQuery.of(context).size.width *
                                           0.45,
@@ -623,6 +666,9 @@ class _CameraPage extends State<CameraPage>
                                         style: BorderStyle.solid),
                                     borderRadius: BorderRadius.circular(15)),
                               ),
+                              SizedBox(
+                                height: 10,
+                              )
                               // AnimatedButton(
                               //   child: Padding(
                               //     padding: const EdgeInsets.all(8.0),
@@ -662,32 +708,32 @@ class _CameraPage extends State<CameraPage>
   }
 
   Widget _buildCroppingImage(File _sample) {
-    return  Column(
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Crop.file(_sample, key: cropKey),
+        ),
+        Container(
+          padding: const EdgeInsets.only(top: 20.0),
+          alignment: AlignmentDirectional.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Expanded(
-                child: Crop.file(_sample, key: cropKey),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 20.0),
-                alignment: AlignmentDirectional.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Text(
-                        'Detect',
-                        style: Theme.of(context)
-                            .textTheme
-                            .button
-                            .copyWith(color: Colors.white),
-                      ),
-                      onPressed: () => _cropImage(_sample),
-                    ),
-                  ],
+              FlatButton(
+                child: Text(
+                  'Detect',
+                  style: Theme.of(context)
+                      .textTheme
+                      .button
+                      .copyWith(color: Colors.white),
                 ),
-              )
+                onPressed: () => _cropImage(_sample),
+              ),
             ],
-          );
+          ),
+        )
+      ],
+    );
   }
 
   Future<void> _cropImage(File _sample) async {

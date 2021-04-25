@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:solvequation/blocs/customer_service.dart';
@@ -21,6 +22,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginState extends State<LoginScreen> {
   bool _isLoggedIn = false;
   bool _loading = false;
+  bool _error = false;
   Map userProfile;
   final facebookLogin = FacebookLogin();
   CustomerService _customerService = new CustomerService();
@@ -52,15 +54,31 @@ class _LoginState extends State<LoginScreen> {
         await _customerService.getUrl();
         Customer customer = new Customer(
             null, null, _auth.currentUser.uid, null, null, null, null, 1, true);
-        _customerService.create(customer).then((value) => {
-              if (value != null)
-                {
-                  setState(() {
-                    _isLoggedIn = true;
-                    _loading = false;
-                  })
-                }
-            });
+        _customerService
+            .create(customer)
+            .then((value) => {
+                  if (value != null)
+                    {
+                      setState(() {
+                        _isLoggedIn = true;
+                        _loading = false;
+                      })
+                    }
+                })
+            .catchError((onError) => {
+                  if (onError != null)
+                    {
+                      Fluttertoast.showToast(
+                          msg: onError,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1),
+                      setState(() {
+                        _isLoggedIn = false;
+                        _loading = false;
+                      })
+                    }
+                });
       }
     } catch (err) {
       print(err);
@@ -94,18 +112,34 @@ class _LoginState extends State<LoginScreen> {
           FacebookAuthProvider.credential(accessToken.token);
       var a = await _auth.signInWithCredential(credential);
       if (a.user != null) {
-       await _customerService.getUrl();
+        await _customerService.getUrl();
         Customer customer = new Customer(
             null, null, a.user?.uid, null, null, null, null, 1, true);
-        _customerService.create(customer).then((value) => {
-              if (value != null)
-                {
-                  setState(() {
-                    _isLoggedIn = true;
-                    _loading = false;
-                  })
-                }
-            });
+        _customerService
+            .create(customer)
+            .then((value) => {
+                  if (value != null)
+                    {
+                      setState(() {
+                        _isLoggedIn = true;
+                        _loading = false;
+                      })
+                    }
+                })
+            .catchError((onError) => {
+                  if (onError != null)
+                    {
+                      Fluttertoast.showToast(
+                          msg: onError,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1),
+                      setState(() {
+                        _isLoggedIn = false;
+                        _loading = false;
+                      })
+                    }
+                });
       }
     }
   }
@@ -209,6 +243,10 @@ class _LoginState extends State<LoginScreen> {
             Spacer(),
           ],
         );
+  // Widget _showMyDialog() {
+  //   return
+  // }
+
   final spinkit = SpinKitFadingCircle(
     itemBuilder: (BuildContext context, int index) {
       return DecoratedBox(
