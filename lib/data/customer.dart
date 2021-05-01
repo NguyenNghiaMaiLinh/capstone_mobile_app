@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class Customer {

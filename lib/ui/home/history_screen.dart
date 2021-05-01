@@ -62,6 +62,7 @@ class _HistoryState extends State<HistoryScreen> {
               Navigator.of(context).pushReplacementNamed(Routes.login);
             }
             setState(() {
+              page++;
               _data.histories.addAll(value.histories);
               _idLoading = false;
             });
@@ -115,7 +116,8 @@ class _HistoryState extends State<HistoryScreen> {
                             color: Colors.black54),
                         textAlign: TextAlign.center,
                       ),
-                    ):Expanded(
+                    )
+                  : Expanded(
                       child: ListView.builder(
                           controller: _scrollController,
                           itemCount: _data.histories.length,
@@ -238,7 +240,6 @@ class _HistoryState extends State<HistoryScreen> {
                                   ],
                                 ));
                           }))
-                  
               : Expanded(
                   child: Shimmer.fromColors(
                     baseColor: Colors.grey[300],

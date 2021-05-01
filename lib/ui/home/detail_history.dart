@@ -85,7 +85,7 @@ class _DetailHistory extends State<DetailHistory> {
                                                     .width *
                                                 0.92,
                                             height: 90,
-                                            fit: BoxFit.fill))
+                                            fit: BoxFit.fitHeight))
                                     : AssetImage(
                                         'assets/images/placeholder.png'),
                                 Padding(
