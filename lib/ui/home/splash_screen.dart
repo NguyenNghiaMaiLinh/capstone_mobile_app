@@ -17,11 +17,11 @@ class _SplashScreenState extends State<SplashPage> {
       seconds: 3,
       navigateAfterSeconds: new LoginScreen(),
       title: new Text(
-        'Solve Equation',
+        'Equation Solver',
         style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
       ),
       image: Image.asset(
-        "assets/icons/fplash_icon.png",
+        "assets/icons/math.png",
         width: 400,
         height: 400,
       ),

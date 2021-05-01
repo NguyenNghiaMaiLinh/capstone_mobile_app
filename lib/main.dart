@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Solve Equation',
+      title: 'Equation Solver',
       color: Colors.white,
       initialRoute: SplashPage.routeName,
       routes: Routes.getRoutes(context),

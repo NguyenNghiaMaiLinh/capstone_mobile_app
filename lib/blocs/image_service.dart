@@ -85,13 +85,13 @@ class ImageService {
       }
     } on SocketException {
       print('No Internet connection ');
-      throw ("Internal server error!");
+      throw ("No Internet connection!");
     } on HttpException {
       print("Couldn't find the post ");
-      throw ("Internal server error!");
+      throw ("Connect to server failed!");
     } on FormatException {
       print("Bad response format ");
-      throw ("Internal server error!");
+      throw ("Bad response format!");
     }
   }
 
@@ -113,13 +113,13 @@ class ImageService {
       return result;
     } on SocketException {
       print('No Internet connection ');
-      throw ("Internal server error!");
+      throw ("No Internet connection!");
     } on HttpException {
       print("Couldn't find the post ");
-      throw ("Internal server error!");
+      throw ("Connect to server failed!");
     } on FormatException {
       print("Bad response format ");
-      throw ("Internal server error!");
+      throw ("Bad response format!");
     }
   }
 
