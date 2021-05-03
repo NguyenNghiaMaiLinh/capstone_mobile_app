@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -6,6 +7,7 @@ import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solvequation/data/history.dart';
 import 'package:solvequation/data/result.dart';
 
@@ -15,17 +17,19 @@ class ImageService {
         new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
     final storage = new FlutterSecureStorage();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = await storage.read(key: "id");
     String url = await storage.read(key: "url");
     String token = await storage.read(key: "token");
-    String auto = await storage.read(key: "auto");
+    // String auto = await storage.read(key: "auto");
+    bool auto = prefs.getBool('auto');
     var uri = Uri.parse('$url/users/$id/images');
     try {
       var request = new http.MultipartRequest("POST", uri);
 
       var multipartFile = new http.MultipartFile('file', stream, length,
           filename: basename(imageFile.path));
-      if (auto == "true") {
+      if (auto == true) {
         Map<String, String> requestBody = <String, String>{'save': '1'};
         request.fields.addAll(requestBody);
       }
@@ -34,6 +38,7 @@ class ImageService {
       request.headers.addAll(headers);
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
+          // .timeout(const Duration(seconds: 30));
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
         String expression = body['expression'] ?? "";
@@ -82,7 +87,11 @@ class ImageService {
       } else {
         ResultItem result = new ResultItem(
             true, "", "", "", null, 0, "", 0, "", response.statusCode);
+        return result;
       }
+    } on TimeoutException {
+      print('The connection has timed out!');
+      throw ("The connection has timed out!");
     } on SocketException {
       print('No Internet connection ');
       throw ("No Internet connection!");
@@ -109,8 +118,11 @@ class ImageService {
         'Authorization': '$token',
       }).then((response) {
         result = new HistoryData.fromResponse(response);
-      });
+      }).timeout(const Duration(seconds: 60));
       return result;
+    } on TimeoutException {
+      print('The connection has timed out!');
+      throw ("The connection has timed out!");
     } on SocketException {
       print('No Internet connection ');
       throw ("No Internet connection!");
@@ -149,17 +161,32 @@ class ImageService {
     String id_user = await storage.read(key: "id");
     String token = await storage.read(key: "token");
     String path = "$url/users/$id_user/images/$id";
-    await http.get(path, headers: {
-      'Authorization': '$token',
-    }).then((response) {
-      if (response.statusCode == 200) {
-        if (response.body != null) {
-          result = History.fromJson(json.decode(response.body));
+    try {
+      await http.get(path, headers: {
+        'Authorization': '$token',
+      }).then((response) {
+        if (response.statusCode == 200) {
+          if (response.body != null) {
+            result = History.fromJson(json.decode(response.body));
+          }
+          return result;
+        } else {
+          return result;
         }
-      } else {
-        return result;
-      }
-    });
+      }).timeout(const Duration(seconds: 60));
+    } on TimeoutException {
+      print('The connection has timed out!');
+      throw ("The connection has timed out!");
+    } on SocketException {
+      print('No Internet connection ');
+      throw ("No Internet connection!");
+    } on HttpException {
+      print("Couldn't find the post ");
+      throw ("Connect to server failed!");
+    } on FormatException {
+      print("Bad response format ");
+      throw ("Bad response format!");
+    }
     return result;
   }
 
@@ -170,17 +197,31 @@ class ImageService {
     String id_user = await storage.read(key: "id");
     String token = await storage.read(key: "token");
     String path = "$url/users/$id_user/images/$id";
-    await http.delete(path, headers: {
-      'Authorization': '$token',
-    }).then((response) {
-      if (response.statusCode == 200) {
-        if (response.body != null) {
-          result = History.fromJson(json.decode(response.body));
+    try {
+      await http.delete(path, headers: {
+        'Authorization': '$token',
+      }).then((response) {
+        if (response.statusCode == 200) {
+          if (response.body != null) {
+            result = History.fromJson(json.decode(response.body));
+          }
+        } else {
+          return result;
         }
-      } else {
-        return result;
-      }
-    });
-    return result;
+      }).timeout(const Duration(seconds: 60));
+    } on TimeoutException {
+      print('The connection has timed out!');
+      throw ("The connection has timed out!");
+    } on SocketException {
+      print('No Internet connection ');
+      throw ("No Internet connection!");
+    } on HttpException {
+      print("Couldn't find the post ");
+      throw ("Connect to server failed!");
+    } on FormatException {
+      print("Bad response format ");
+      throw ("Bad response format!");
+    }
+      return result;
   }
 }

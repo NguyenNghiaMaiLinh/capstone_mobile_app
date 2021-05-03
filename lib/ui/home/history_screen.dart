@@ -25,7 +25,11 @@ class _HistoryState extends State<HistoryScreen> {
   bool _idLoading = true;
   HistoryData _data;
   int page = 0;
-
+  Future<bool> _onWillPop() async {
+    return Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => HomeScreen())) ??
+        false;
+  }
   @override
   void initState() {
     super.initState();
@@ -86,7 +90,9 @@ class _HistoryState extends State<HistoryScreen> {
       fontSize: 17,
     );
 
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: _onWillPop,
+        child: new Scaffold(
       appBar: AppBar(
           title: new Text(
             'History',
@@ -278,7 +284,7 @@ class _HistoryState extends State<HistoryScreen> {
                 ),
         ],
       ),
-    );
+    ));
   }
 
   final spinkit = SpinKitFadingCircle(

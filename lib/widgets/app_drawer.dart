@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:solvequation/constants/constants.dart';
 import 'package:solvequation/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatefulWidget {
   final Function onTap;
@@ -21,23 +22,29 @@ class _AppDrawerState extends State<AppDrawer> {
   final user = FirebaseAuth.instance.currentUser;
   bool auto;
   @override
-  void initState() {
+  Future<void> initState() {
     super.initState();
-    final storage = new FlutterSecureStorage();
+    // final storage = new FlutterSecureStorage();
     if (user == null) {
       Navigator.pushReplacementNamed(context, Routes.login);
     }
-    storage.read(key: "auto").then((value) {
-      if (value == "true") {
-        setState(() {
-          auto = true;
-        });
-      } else {
-        setState(() {
-          auto = false;
-        });
-      }
-    });
+    _getValue().then((value) => setState(() {
+          auto = value;
+        }));
+
+    // storage
+    //     .read(
+    //   key: "auto",
+    // )
+    //     .then((value) {
+    //   if (value == "true") {
+
+    //   } else {
+    //     setState(() {
+    //       auto = false;
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -60,8 +67,17 @@ class _AppDrawerState extends State<AppDrawer> {
     });
   }
 
+  Future<bool> _getValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('auto') ?? true;
+  }
+
+  _setValue(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('auto', value);
+  }
+
   Drawer buildDrawer(BuildContext context) {
-    final storage = new FlutterSecureStorage();
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -183,22 +199,25 @@ class _AppDrawerState extends State<AppDrawer> {
                                 activeColor: kPrimaryColor,
                                 value: true,
                                 onChanged: (value) {
+                                  _setValue(value);
                                   setState(() {
                                     auto = value;
                                   });
-                                  storage.write(
-                                      key: "auto", value: value.toString());
+
+                                  // storage.write(
+                                  //     key: "auto", value: value.toString());
                                 },
                               )
                             : CustomSwitch(
                                 activeColor: kPrimaryColor,
                                 value: false,
                                 onChanged: (value) {
+                                  _setValue(value);
                                   setState(() {
                                     auto = value;
                                   });
-                                  storage.write(
-                                      key: "auto", value: value.toString());
+                                  // storage.write(
+                                  //     key: "auto", value: value.toString());
                                 },
                               ),
                       ],

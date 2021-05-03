@@ -15,11 +15,33 @@ class HomeScreen extends StatefulWidget {
 
 class HomeState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   final user = FirebaseAuth.instance.currentUser;
-  final _customerService = new CustomerService();
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Confirm exit'),
+            content: new Text('Do you want to exit?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+      onWillPop: _onWillPop,
+      child: new Scaffold(
         appBar: new AppBar(backgroundColor: kPrimaryColor, actions: <Widget>[
           Container(
             margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
@@ -208,7 +230,7 @@ class HomeState extends State<HomeScreen> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
-        ])));
+        ]))));
   }
 
   final spinkit = SpinKitFadingCircle(

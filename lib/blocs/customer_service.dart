@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solvequation/data/customer.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -9,6 +10,8 @@ import 'package:http/http.dart' as http;
 class CustomerService {
   Future<Customer> create(Customer customer) async {
     final storage = new FlutterSecureStorage();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String url = await storage.read(key: "url");
     if (url == null) {
       await getUrl();
@@ -16,17 +19,20 @@ class CustomerService {
     }
     var body = customer.toJson();
     try {
-      var response = await http.post(
-        '$url/users',
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(body),
-      );
+      var response = await http
+          .post(
+            '$url/users',
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(body),
+          )
+          .timeout(const Duration(seconds: 60));
       if (response.statusCode == 201) {
         var dataReponse = jsonDecode(response.body);
         var data = Customer.fromJson(dataReponse['user']);
-        await storage.write(key: "auto", value: "true");
+        prefs.setBool('auto', true);
+        // await storage.write(key: "auto", value: "true");
         // Write value
         await storage.write(key: "id", value: data.id.toString());
         await storage.write(key: "token", value: dataReponse['token']);
@@ -35,12 +41,16 @@ class CustomerService {
       if (response.statusCode == 200) {
         var dataReponse = jsonDecode(response.body);
         var data = Customer.fromJson(dataReponse['user']);
-        await storage.write(key: "auto", value: "true");
+        prefs.setBool('auto', true);
+        // await storage.write(key: "auto", value: "true");
         // Write value
         await storage.write(key: "id", value: data.id.toString());
         await storage.write(key: "token", value: dataReponse['token']);
         return data;
       }
+    } on TimeoutException {
+      print('The connection has timed out!');
+      throw ("The connection has timed out!");
     } on SocketException {
       print('No Internet connection ');
       throw ("No Internet connection!");

@@ -48,6 +48,12 @@ class _CameraPage extends State<CameraPage>
     _lastCropped?.delete();
   }
 
+  Future<bool> _onWillPop() async {
+    return Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => HomeScreen())) ??
+        false;
+  }
+
   @override
   void initState() {
     if (widget.selectedFile != null) {
@@ -163,6 +169,7 @@ class _CameraPage extends State<CameraPage>
       if (image != null) {
         setState(() {
           edit = true;
+          _output = false;
           _selectedFile = image;
         });
       }
@@ -172,74 +179,496 @@ class _CameraPage extends State<CameraPage>
   @override
   Widget build(BuildContext context) {
     return (edit)
-        ? SafeArea(
-            child: Container(
-              color: Colors.black,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
-              child: _buildCroppingImage(_selectedFile),
-            ),
-          )
-        : Scaffold(
-            resizeToAvoidBottomInset: false, // set it to false
-            appBar: AppBar(
-              title: new Text(
-                'Solve Equation',
-                style: new TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    color: Colors.white),
+        ? new WillPopScope(
+            onWillPop: _onWillPop,
+            child: new SafeArea(
+              child: Container(
+                color: Colors.black,
+                padding: const EdgeInsets.symmetric(
+                    vertical: 40.0, horizontal: 20.0),
+                child: _buildCroppingImage(_selectedFile),
               ),
-              backgroundColor: kPrimaryColor,
-              leading: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => HomeScreen()))
-                      }),
-            ),
+            ))
+        : new WillPopScope(
+            onWillPop: _onWillPop,
+            child: new Scaffold(
+              resizeToAvoidBottomInset: false, // set it to false
+              appBar: AppBar(
+                title: new Text(
+                  'Solve Equation',
+                  style: new TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Colors.white),
+                ),
+                backgroundColor: kPrimaryColor,
+                leading: IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => HomeScreen()))
+                        }),
+              ),
 
-            body: SingleChildScrollView(
-                child: Column(
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    getImageWidget(),
-                    (_inProcess)
-                        ? Container(
-                            color: Colors.white,
-                            height: MediaQuery.of(context).size.height * 0.95,
-                            child: Column(
-                              children: <Widget>[
-                                spinkit,
-                              ],
-                            ),
-                          )
-                        : Center(),
-                    (_output)
-                        ? (isDevice)
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 10),
-                                child: Row(
+              body: SingleChildScrollView(
+                  child: Column(
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      getImageWidget(),
+                      (_inProcess)
+                          ? Container(
+                              color: Colors.white,
+                              height: MediaQuery.of(context).size.height * 0.95,
+                              child: Column(
+                                children: <Widget>[
+                                  spinkit,
+                                ],
+                              ),
+                            )
+                          : (_output)
+                              ? (isDevice)
+                                  ? Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          AnimatedButton(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.mode_edit,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  Text(
+                                                    'Edit',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                edit = true;
+                                              });
+                                            },
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.45,
+                                            shadowDegree: ShadowDegree.dark,
+                                            color: Colors.blueGrey,
+                                          ),
+                                          AnimatedButton(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.done_outline_rounded,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  Text(
+                                                    'Detect',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                _inProcess = true;
+                                                isDevice = false;
+                                              });
+                                              _imageService.Upload(
+                                                      _selectedFile)
+                                                  .then((result) {
+                                                if (result != null) {
+                                                  if (result.status == 401) {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                LoginScreen()));
+                                                  }
+                                                  setState(() {
+                                                    _output = true;
+                                                    _isSuccess = result.success;
+                                                    _item = result;
+                                                    isDevice = false;
+                                                    _inProcess = false;
+                                                  });
+                                                }
+                                              }).catchError((onError) => {
+                                                        if (onError != null)
+                                                          {
+                                                            Fluttertoast.showToast(
+                                                                msg: onError,
+                                                                toastLength: Toast
+                                                                    .LENGTH_SHORT,
+                                                                gravity:
+                                                                    ToastGravity
+                                                                        .BOTTOM,
+                                                                timeInSecForIosWeb:
+                                                                    1),
+                                                            Navigator.of(
+                                                                    context)
+                                                                .push(MaterialPageRoute(
+                                                                    builder: (context) => CameraPage(
+                                                                        _selectedFile
+                                                                            .path,
+                                                                        false)))
+                                                          }
+                                                      });
+                                            },
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.45,
+                                            shadowDegree: ShadowDegree.dark,
+                                            color: Colors.green[600],
+                                          ),
+                                        ],
+                                      ))
+                                  : (_item != null)
+                                      ? (_isSuccess)
+                                          ? Column(
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 5,
+                                                      vertical: 10),
+                                                  child: Text(
+                                                    "Expression",
+                                                    style: GoogleFonts.openSans(
+                                                        textStyle: TextStyle(
+                                                            color:
+                                                                Colors.black87,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ),
+                                                ),
+                                                Divider(
+                                                  color: Colors.black,
+                                                  height: 1,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          20, 8, 20, 8),
+                                                  child: TeXView(
+                                                    renderingEngine:
+                                                        const TeXViewRenderingEngine
+                                                            .katex(),
+                                                    child: TeXViewDocument(
+                                                        _item.latex,
+                                                        style: TeXViewStyle(
+                                                            textAlign:
+                                                                TeXViewTextAlign
+                                                                    .Center)),
+                                                    style: TeXViewStyle(
+                                                      elevation: 10,
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Divider(
+                                                  color: Colors.black,
+                                                  height: 1,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 5,
+                                                      vertical: 10),
+                                                  child: Text(
+                                                    "Result",
+                                                    style: GoogleFonts.openSans(
+                                                        textStyle: TextStyle(
+                                                            color:
+                                                                Colors.black87,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                ListView.builder(
+                                                    shrinkWrap: true,
+                                                    itemCount:
+                                                        _item?.roots?.length ??
+                                                            0,
+                                                    itemBuilder:
+                                                        (BuildContext ctxt,
+                                                            int index) {
+                                                      return Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  bottom: 20,
+                                                                  left: 80),
+                                                          child: Row(children: [
+                                                            Flexible(
+                                                                flex: 2,
+                                                                child: Row(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Flexible(
+                                                                      child:
+                                                                          Text(
+                                                                        '${_item?.roots[index]}',
+                                                                        style: GoogleFonts.openSans(
+                                                                            textStyle: TextStyle(
+                                                                                color: Colors.black87,
+                                                                                fontSize: 18,
+                                                                                fontWeight: FontWeight.bold)),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ))
+                                                          ]));
+                                                    }),
+                                                Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 25,
+                                                            vertical: 10),
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.9,
+                                                      height: 56,
+                                                      child: FlatButton(
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
+                                                        color: kPrimaryColor,
+                                                        onPressed: () => {
+                                                          imageCache.clear(),
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      CameraPage(
+                                                                          null,
+                                                                          false)))
+                                                        },
+                                                        child: Text(
+                                                          "Continue",
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ))
+                                              ],
+                                            )
+                                          : Column(
+                                              children: <Widget>[
+                                                (_item != null &&
+                                                        _item.latex.isNotEmpty)
+                                                    ? Column(
+                                                        children: [
+                                                          Divider(
+                                                            color: Colors.black,
+                                                            height: 1,
+                                                          ),
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        15,
+                                                                    vertical:
+                                                                        20),
+                                                            child: TeXView(
+                                                              renderingEngine:
+                                                                  const TeXViewRenderingEngine
+                                                                      .katex(),
+                                                              child: TeXViewDocument(
+                                                                  _item.latex,
+                                                                  style: TeXViewStyle(
+                                                                      textAlign:
+                                                                          TeXViewTextAlign
+                                                                              .Center)),
+                                                              style:
+                                                                  TeXViewStyle(
+                                                                elevation: 10,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Divider(
+                                                            color: Colors.black,
+                                                            height: 1,
+                                                          ),
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        5,
+                                                                    vertical:
+                                                                        15),
+                                                            child: Text(
+                                                              _item?.message ??
+                                                                  "",
+                                                              style: GoogleFonts.openSans(
+                                                                  textStyle: TextStyle(
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      fontSize:
+                                                                          16)),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Column(
+                                                        children: [
+                                                          Divider(
+                                                            color: Colors.black,
+                                                            height: 1,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        5,
+                                                                    vertical:
+                                                                        10),
+                                                            child: Text(
+                                                              _item?.message ??
+                                                                  "",
+                                                              style: GoogleFonts.openSans(
+                                                                  textStyle: TextStyle(
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      fontSize:
+                                                                          16)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Divider(
+                                                            color: Colors.black,
+                                                            height: 1,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        20,
+                                                                    vertical:
+                                                                        10),
+                                                            child: Text(
+                                                              _item?.expression ??
+                                                                  "",
+                                                              style: GoogleFonts.openSans(
+                                                                  textStyle: TextStyle(
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      fontSize:
+                                                                          16)),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 20,
+                                                            vertical: 20),
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.8,
+                                                      height: 56,
+                                                      child: FlatButton(
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
+                                                        color: kPrimaryColor,
+                                                        onPressed: () => {
+                                                          imageCache.clear(),
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      CameraPage(
+                                                                          null,
+                                                                          false)))
+                                                        },
+                                                        child: Text(
+                                                          "Continue",
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ))
+                                              ],
+                                            )
+                                      : Center()
+                              : Column(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                      MainAxisAlignment.spaceAround,
                                   children: <Widget>[
                                     AnimatedButton(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 8, 20, 8),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: <Widget>[
                                             Icon(
-                                              Icons.mode_edit,
+                                              Icons.camera,
                                               color: Colors.white,
                                             ),
                                             SizedBox(width: 6),
                                             Text(
-                                              'Edit',
+                                              'Camera',
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.white,
@@ -250,461 +679,91 @@ class _CameraPage extends State<CameraPage>
                                         ),
                                       ),
                                       onPressed: () {
-                                        setState(() {
-                                          edit = true;
-                                        });
+                                        takeImage(ImageSource.camera);
                                       },
                                       width: MediaQuery.of(context).size.width *
-                                          0.45,
-                                      shadowDegree: ShadowDegree.dark,
-                                      color: Colors.blueGrey,
+                                          0.9,
+                                      shadowDegree: ShadowDegree.light,
+                                      color: kPrimaryColor,
                                     ),
-                                    AnimatedButton(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                    SizedBox(height: 16),
+                                    FlatButton(
+                                      onPressed: () {
+                                        getImage(ImageSource.gallery);
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.8,
+                                        height: 50,
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Icon(
-                                              Icons.done_outline_rounded,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(width: 6),
+                                            // Icon(
+                                            //   Icons.photo_library,
+                                            //   color: Colors.green,
+                                            // ),
+                                            // SizedBox(width: 6),
                                             Text(
-                                              'Detect',
+                                              'From Library',
                                               style: TextStyle(
                                                 fontSize: 18,
-                                                color: Colors.white,
+                                                color: kPrimaryColor,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _inProcess = true;
-                                          isDevice = false;
-                                        });
-                                        _imageService.Upload(_selectedFile)
-                                            .then((result) {
-                                          if (result != null) {
-                                            if (result.status == 401) {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          LoginScreen()));
-                                            }
-                                            setState(() {
-                                              _output = true;
-                                              _isSuccess = result.success;
-                                              _item = result;
-                                              isDevice = false;
-                                              _inProcess = false;
-                                            });
-                                          }
-                                        }).catchError((onError) => {
-                                                  if (onError != null)
-                                                    {
-                                                      Fluttertoast.showToast(
-                                                          msg: onError,
-                                                          toastLength: Toast
-                                                              .LENGTH_SHORT,
-                                                          gravity: ToastGravity
-                                                              .BOTTOM,
-                                                          timeInSecForIosWeb:
-                                                              1),
-                                                      Navigator.of(context).push(
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  CameraPage(
-                                                                      _selectedFile
-                                                                          .path,
-                                                                      false)))
-                                                    }
-                                                });
-                                      },
-                                      width: MediaQuery.of(context).size.width *
-                                          0.45,
-                                      shadowDegree: ShadowDegree.dark,
-                                      color: Colors.green[600],
+                                      textColor: kPrimaryColor,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: kPrimaryColor,
+                                              width: 1,
+                                              style: BorderStyle.solid),
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
                                     ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                    // AnimatedButton(
+                                    //   child: Padding(
+                                    //     padding: const EdgeInsets.all(8.0),
+                                    //     child: Row(
+                                    //       mainAxisAlignment: MainAxisAlignment.center,
+                                    //       children: <Widget>[
+                                    //         Icon(
+                                    //           Icons.photo_library,
+                                    //           color: Colors.white,
+                                    //         ),
+                                    //         SizedBox(width: 6),
+                                    //         Text(
+                                    //           'Device',
+                                    //           style: TextStyle(
+                                    //             fontSize: 18,
+                                    //             color: Colors.white,
+                                    //             fontWeight: FontWeight.w500,
+                                    //           ),
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //   ),
+                                    //   onPressed: () {
+                                    //     getImage(ImageSource.gallery);
+                                    //   },
+                                    //   width: MediaQuery.of(context).size.width * 0.45,
+                                    //   shadowDegree: ShadowDegree.light,
+                                    //   color: Colors.green,
+                                    // ),
                                   ],
-                                ))
-                            : (_item != null)
-                                ? (_isSuccess)
-                                    ? Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 5, vertical: 10),
-                                            child: Text(
-                                              "Expression",
-                                              style: GoogleFonts.openSans(
-                                                  textStyle: TextStyle(
-                                                      color: Colors.black87,
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ),
-                                          ),
-                                          Divider(
-                                            color: Colors.black,
-                                            height: 1,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                20, 8, 20, 8),
-                                            child: TeXView(
-                                              renderingEngine:
-                                                  const TeXViewRenderingEngine
-                                                      .katex(),
-                                              child: TeXViewDocument(
-                                                  _item.latex,
-                                                  style: TeXViewStyle(
-                                                      textAlign:
-                                                          TeXViewTextAlign
-                                                              .Center)),
-                                              style: TeXViewStyle(
-                                                elevation: 10,
-                                                backgroundColor: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Divider(
-                                            color: Colors.black,
-                                            height: 1,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 5, vertical: 10),
-                                            child: Text(
-                                              "Result",
-                                              style: GoogleFonts.openSans(
-                                                  textStyle: TextStyle(
-                                                      color: Colors.black87,
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount:
-                                                  _item?.roots?.length ?? 0,
-                                              itemBuilder: (BuildContext ctxt,
-                                                  int index) {
-                                                return Container(
-                                                    margin: EdgeInsets.only(
-                                                        bottom: 20, left: 80),
-                                                    child: Row(children: [
-                                                      Flexible(
-                                                          flex: 2,
-                                                          child: Row(
-                                                            children: <Widget>[
-                                                              Flexible(
-                                                                child: Text(
-                                                                  '${_item?.roots[index]}',
-                                                                  style: GoogleFonts.openSans(
-                                                                      textStyle: TextStyle(
-                                                                          color: Colors
-                                                                              .black87,
-                                                                          fontSize:
-                                                                              18,
-                                                                          fontWeight:
-                                                                              FontWeight.bold)),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ))
-                                                    ]));
-                                              }),
-                                          Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 25, vertical: 10),
-                                              child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.9,
-                                                height: 56,
-                                                child: FlatButton(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  color: kPrimaryColor,
-                                                  onPressed: () => {
-                                                    imageCache.clear(),
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    CameraPage(
-                                                                        null,
-                                                                        false)))
-                                                  },
-                                                  child: Text(
-                                                    "Continue",
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ))
-                                        ],
-                                      )
-                                    : Column(
-                                        children: <Widget>[
-                                          (_item != null &&
-                                                  _item.latex.isNotEmpty)
-                                              ? Column(
-                                                  children: [
-                                                    Divider(
-                                                      color: Colors.black,
-                                                      height: 1,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 15,
-                                                              vertical: 20),
-                                                      child: TeXView(
-                                                        renderingEngine:
-                                                            const TeXViewRenderingEngine
-                                                                .katex(),
-                                                        child: TeXViewDocument(
-                                                            _item.latex,
-                                                            style: TeXViewStyle(
-                                                                textAlign:
-                                                                    TeXViewTextAlign
-                                                                        .Center)),
-                                                        style: TeXViewStyle(
-                                                          elevation: 10,
-                                                          backgroundColor:
-                                                              Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Divider(
-                                                      color: Colors.black,
-                                                      height: 1,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 5,
-                                                              vertical: 15),
-                                                      child: Text(
-                                                        _item?.message ?? "",
-                                                        style: GoogleFonts.openSans(
-                                                            textStyle: TextStyle(
-                                                                color: Colors
-                                                                    .black54,
-                                                                fontSize: 16)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              : Column(
-                                                  children: [
-                                                    Divider(
-                                                      color: Colors.black,
-                                                      height: 1,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 5,
-                                                              vertical: 10),
-                                                      child: Text(
-                                                        _item?.message ?? "",
-                                                        style: GoogleFonts.openSans(
-                                                            textStyle: TextStyle(
-                                                                color: Colors
-                                                                    .black54,
-                                                                fontSize: 16)),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Divider(
-                                                      color: Colors.black,
-                                                      height: 1,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 20,
-                                                              vertical: 10),
-                                                      child: Text(
-                                                        _item?.expression ?? "",
-                                                        style: GoogleFonts.openSans(
-                                                            textStyle: TextStyle(
-                                                                color: Colors
-                                                                    .black54,
-                                                                fontSize: 16)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                          Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 20, vertical: 20),
-                                              child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.8,
-                                                height: 56,
-                                                child: FlatButton(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  color: kPrimaryColor,
-                                                  onPressed: () => {
-                                                    imageCache.clear(),
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    CameraPage(
-                                                                        null,
-                                                                        false)))
-                                                  },
-                                                  child: Text(
-                                                    "Continue",
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ))
-                                        ],
-                                      )
-                                : Center()
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              AnimatedButton(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.camera,
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(width: 6),
-                                      Text(
-                                        'Camera',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 ),
-                                onPressed: () {
-                                  takeImage(ImageSource.camera);
-                                },
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                shadowDegree: ShadowDegree.light,
-                                color: kPrimaryColor,
-                              ),
-                              SizedBox(height: 16),
-                              FlatButton(
-                                onPressed: () {
-                                  getImage(ImageSource.gallery);
-                                },
-                                child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  height: 50,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      // Icon(
-                                      //   Icons.photo_library,
-                                      //   color: Colors.green,
-                                      // ),
-                                      // SizedBox(width: 6),
-                                      Text(
-                                        'From Library',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                textColor: kPrimaryColor,
-                                shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                        color: kPrimaryColor,
-                                        width: 1,
-                                        style: BorderStyle.solid),
-                                    borderRadius: BorderRadius.circular(15)),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              )
-                              // AnimatedButton(
-                              //   child: Padding(
-                              //     padding: const EdgeInsets.all(8.0),
-                              //     child: Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: <Widget>[
-                              //         Icon(
-                              //           Icons.photo_library,
-                              //           color: Colors.white,
-                              //         ),
-                              //         SizedBox(width: 6),
-                              //         Text(
-                              //           'Device',
-                              //           style: TextStyle(
-                              //             fontSize: 18,
-                              //             color: Colors.white,
-                              //             fontWeight: FontWeight.w500,
-                              //           ),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              //   onPressed: () {
-                              //     getImage(ImageSource.gallery);
-                              //   },
-                              //   width: MediaQuery.of(context).size.width * 0.45,
-                              //   shadowDegree: ShadowDegree.light,
-                              //   color: Colors.green,
-                              // ),
-                            ],
-                          ),
-                  ],
-                ),
-              ],
-            )),
-          );
+                    ],
+                  ),
+                ],
+              )),
+            ));
   }
 
   Widget _buildCroppingImage(File _sample) {

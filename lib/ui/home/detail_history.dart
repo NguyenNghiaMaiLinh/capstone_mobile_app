@@ -37,326 +37,348 @@ class _DetailHistory extends State<DetailHistory> {
     });
   }
 
+  Future<bool> _onWillPop() async {
+    return Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => HistoryScreen())) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false, // set it to false
-        appBar: AppBar(
-            title: new Text(
-              'Detail Equation',
-              style: new TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                  color: Colors.white),
-            ),
-            backgroundColor: kPrimaryColor,
-            leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => HistoryScreen()))
-                    })),
-        body: SingleChildScrollView(
-            child: (!_isLoading)
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
+    return new WillPopScope(
+        onWillPop: _onWillPop,
+        child: new Scaffold(
+            resizeToAvoidBottomInset: false, // set it to false
+            appBar: AppBar(
+                title: new Text(
+                  'Detail Equation',
+                  style: new TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Colors.white),
+                ),
+                backgroundColor: kPrimaryColor,
+                leading: IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => HistoryScreen()))
+                        })),
+            body: SingleChildScrollView(
+                child: (!_isLoading)
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 15),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: Colors.white10,
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                (_item.url != null)
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            topRight: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)),
-                                        child: Image.network('${_item.url}',
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.92,
-                                            height: 90,
-                                            fit: BoxFit.fitHeight))
-                                    : AssetImage(
-                                        'assets/images/placeholder.png'),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  child: Text(
-                                    '${_item.dateTime}',
-                                    style: GoogleFonts.openSans(
-                                        textStyle: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 12,
-                                    )),
-                                  ),
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 15),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Colors.white10,
                                 ),
-                              ],
-                            ),
-                          ),
-                          (_item.success)
-                              ? Column(
-                                  children: [
-                                    Divider(
-                                      color: Colors.black,
-                                      height: 1,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 10),
-                                      child: Text(
-                                        "Expression",
-                                        style: GoogleFonts.openSans(
-                                            textStyle: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ),
-                                    TeXView(
-                                      renderingEngine:
-                                          const TeXViewRenderingEngine.katex(),
-                                      child: TeXViewDocument(_item.latex,
-                                          style: TeXViewStyle(
-                                              textAlign:
-                                                  TeXViewTextAlign.Center)),
-                                      style: TeXViewStyle(
-                                        elevation: 10,
-                                        backgroundColor: Colors.white,
-                                      ),
-                                    ),
-                                    // KaTeX(
-                                    //   laTeXCode: Text(_item.latex,
-                                    //       style: Theme.of(context)
-                                    //           .textTheme
-                                    //           .bodyText2),
-                                    // ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Divider(
-                                      color: Colors.black,
-                                      height: 1,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 10),
-                                      child: Text(
-                                        "Result",
-                                        style: GoogleFonts.openSans(
-                                            textStyle: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ),
-                                    ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: _item?.roots?.length,
-                                        itemBuilder:
-                                            (BuildContext ctxt, int index) {
-                                          String root = _item.roots[index];
-                                          return Container(
-                                              margin: EdgeInsets.only(
-                                                  bottom: 20, left: 80),
-                                              child: Row(children: [
-                                                Flexible(
-                                                    flex: 2,
-                                                    child: Flexible(
-                                                      child: Text(
-                                                        root,
-                                                        style: GoogleFonts.openSans(
-                                                            textStyle: TextStyle(
-                                                                color: Colors
-                                                                    .black87,
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      ),
-                                                    ))
-                                              ]));
-                                        }),
-                                  ],
-                                )
-                              : Column(
+                                child: Column(
                                   children: <Widget>[
-                                    (_item.latex.isNotEmpty)
-                                        ? Column(
-                                            children: [
-                                              Divider(
-                                                color: Colors.black,
-                                                height: 1,
-                                              ),
-                                              // ),
-                                              TeXView(
-                                                renderingEngine:
-                                                    const TeXViewRenderingEngine
-                                                        .katex(),
-                                                child: TeXViewDocument(
-                                                    _item.latex,
-                                                    style: TeXViewStyle(
-                                                        textAlign:
-                                                            TeXViewTextAlign
-                                                                .Center)),
-                                                style: TeXViewStyle(
-                                                  elevation: 10,
-                                                  backgroundColor: Colors.white,
-                                                ),
-                                              ),
-                                              Divider(
-                                                color: Colors.black,
-                                                height: 1,
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 5,
-                                                    vertical: 15),
-                                                child: Text(
-                                                  _item?.message ?? "",
-                                                  style: GoogleFonts.openSans(
-                                                      textStyle: TextStyle(
-                                                          color: Colors.black54,
-                                                          fontSize: 16)),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : Column(
-                                            children: [
-                                              Divider(
-                                                color: Colors.black,
-                                                height: 1,
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 5,
-                                                    vertical: 10),
-                                                child: Text(
-                                                  _item?.message ?? "",
-                                                  style: GoogleFonts.openSans(
-                                                      textStyle: TextStyle(
-                                                          color: Colors.black54,
-                                                          fontSize: 16)),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Divider(
-                                                color: Colors.black,
-                                                height: 1,
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 10),
-                                                child: Text(
-                                                  _item?.expression ?? "",
-                                                  style: GoogleFonts.openSans(
-                                                      textStyle: TextStyle(
-                                                          color: Colors.black54,
-                                                          fontSize: 16)),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                    (_item.url != null)
+                                        ? ClipRRect(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                topRight: Radius.circular(10),
+                                                bottomLeft: Radius.circular(10),
+                                                bottomRight:
+                                                    Radius.circular(10)),
+                                            child: Image.network('${_item.url}',
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.92,
+                                                height: 90,
+                                                fit: BoxFit.fitHeight))
+                                        : AssetImage(
+                                            'assets/images/placeholder.png'),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 10),
+                                      child: Text(
+                                        '${_item.dateTime}',
+                                        style: GoogleFonts.openSans(
+                                            textStyle: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 12,
+                                        )),
+                                      ),
+                                    ),
                                   ],
                                 ),
-                          Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 5),
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: 56,
-                                child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20)),
-                                  color: kPrimaryColor,
-                                  onPressed: () => {
-                                    imageCache.clear(),
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                CameraPage(null, false)))
-                                  },
-                                  child: Text(
-                                    "Continue solve",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
+                              ),
+                              (_item.success)
+                                  ? Column(
+                                      children: [
+                                        Divider(
+                                          color: Colors.black,
+                                          height: 1,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 10),
+                                          child: Text(
+                                            "Expression",
+                                            style: GoogleFonts.openSans(
+                                                textStyle: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ),
+                                        ),
+                                        TeXView(
+                                          renderingEngine:
+                                              const TeXViewRenderingEngine
+                                                  .katex(),
+                                          child: TeXViewDocument(_item.latex,
+                                              style: TeXViewStyle(
+                                                  textAlign:
+                                                      TeXViewTextAlign.Center)),
+                                          style: TeXViewStyle(
+                                            elevation: 10,
+                                            backgroundColor: Colors.white,
+                                          ),
+                                        ),
+                                        // KaTeX(
+                                        //   laTeXCode: Text(_item.latex,
+                                        //       style: Theme.of(context)
+                                        //           .textTheme
+                                        //           .bodyText2),
+                                        // ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Divider(
+                                          color: Colors.black,
+                                          height: 1,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 10),
+                                          child: Text(
+                                            "Result",
+                                            style: GoogleFonts.openSans(
+                                                textStyle: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ),
+                                        ),
+                                        ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: _item?.roots?.length,
+                                            itemBuilder:
+                                                (BuildContext ctxt, int index) {
+                                              String root = _item.roots[index];
+                                              return Container(
+                                                  margin: EdgeInsets.only(
+                                                      bottom: 20, left: 80),
+                                                  child: Row(children: [
+                                                    Flexible(
+                                                        flex: 2,
+                                                        child: Flexible(
+                                                          child: Text(
+                                                            root,
+                                                            style: GoogleFonts.openSans(
+                                                                textStyle: TextStyle(
+                                                                    color: Colors
+                                                                        .black87,
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ),
+                                                        ))
+                                                  ]));
+                                            }),
+                                      ],
+                                    )
+                                  : Column(
+                                      children: <Widget>[
+                                        (_item.latex.isNotEmpty)
+                                            ? Column(
+                                                children: [
+                                                  Divider(
+                                                    color: Colors.black,
+                                                    height: 1,
+                                                  ),
+                                                  // ),
+                                                  TeXView(
+                                                    renderingEngine:
+                                                        const TeXViewRenderingEngine
+                                                            .katex(),
+                                                    child: TeXViewDocument(
+                                                        _item.latex,
+                                                        style: TeXViewStyle(
+                                                            textAlign:
+                                                                TeXViewTextAlign
+                                                                    .Center)),
+                                                    style: TeXViewStyle(
+                                                      elevation: 10,
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                    ),
+                                                  ),
+                                                  Divider(
+                                                    color: Colors.black,
+                                                    height: 1,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 5,
+                                                            vertical: 15),
+                                                    child: Text(
+                                                      _item?.message ?? "",
+                                                      style: GoogleFonts.openSans(
+                                                          textStyle: TextStyle(
+                                                              color: Colors
+                                                                  .black54,
+                                                              fontSize: 16)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Column(
+                                                children: [
+                                                  Divider(
+                                                    color: Colors.black,
+                                                    height: 1,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 5,
+                                                            vertical: 10),
+                                                    child: Text(
+                                                      _item?.message ?? "",
+                                                      style: GoogleFonts.openSans(
+                                                          textStyle: TextStyle(
+                                                              color: Colors
+                                                                  .black54,
+                                                              fontSize: 16)),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Divider(
+                                                    color: Colors.black,
+                                                    height: 1,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 20,
+                                                            vertical: 10),
+                                                    child: Text(
+                                                      _item?.expression ?? "",
+                                                      style: GoogleFonts.openSans(
+                                                          textStyle: TextStyle(
+                                                              color: Colors
+                                                                  .black54,
+                                                              fontSize: 16)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                      ],
                                     ),
+                              Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 5),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 56,
+                                    child: FlatButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      color: kPrimaryColor,
+                                      onPressed: () => {
+                                        imageCache.clear(),
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CameraPage(null, false)))
+                                      },
+                                      child: Text(
+                                        "Continue solve",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )),
+                              FlatButton(
+                                onPressed: () {
+                                  _imageService
+                                      .deleteImage(_id)
+                                      .then((value) => _showMyDialog());
+                                },
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  height: 50,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      // Icon(
+                                      //   Icons.photo_library,
+                                      //   color: Colors.green,
+                                      // ),
+                                      // SizedBox(width: 6),
+                                      Text(
+                                        'Delete',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              )),
-                          FlatButton(
-                            onPressed: () {
-                              _imageService
-                                  .deleteImage(_id)
-                                  .then((value) => _showMyDialog());
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              height: 50,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  // Icon(
-                                  //   Icons.photo_library,
-                                  //   color: Colors.green,
-                                  // ),
-                                  // SizedBox(width: 6),
-                                  Text(
-                                    'Delete',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                                textColor: kPrimaryColor,
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: Colors.red,
+                                        width: 1,
+                                        style: BorderStyle.solid),
+                                    borderRadius: BorderRadius.circular(15)),
                               ),
-                            ),
-                            textColor: kPrimaryColor,
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Colors.red,
-                                    width: 1,
-                                    style: BorderStyle.solid),
-                                borderRadius: BorderRadius.circular(15)),
-                          ),
+                            ],
+                          )
                         ],
                       )
-                    ],
-                  )
-                : Container(
-                    color: Colors.white,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        spinkit,
-                      ],
-                    ),
-                  )));
+                    : Container(
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            spinkit,
+                          ],
+                        ),
+                      ))));
   }
 
   Future<void> _showMyDialog() async {
